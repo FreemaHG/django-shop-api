@@ -1,0 +1,29 @@
+version: '3.11'
+
+services:
+
+  mysql:
+    # Используем официальный образ MySQL
+    image: mysql
+    container_name: mysql
+    ports:
+      - 3306:3306
+    # Переменная среды с паролем для подключения к БД
+    environment:
+      - MYSQL_DATABASE=${DB_NAME:?err}
+      - MYSQL_ROOT_PASSWORD=${DB_PASS:?err}
+      - MYSQL_USER=${DB_USER:?err}
+      - MYSQL_PASSWORD=${DB_PASS:?err}
+    env_file:
+      - .env
+#    restart: always
+    # Тома для хранения данных и конфигов БД
+    volumes:
+      # Сохраняем БД физически в файловой системе
+      - ./mysql/:/var/lib/mysql
+      # Сохраняем в именованный том
+      - mysql_config:/etc/mysql
+
+volumes:
+#  mysql:
+  mysql_config:
