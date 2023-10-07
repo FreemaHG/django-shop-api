@@ -118,8 +118,10 @@
               <!-- Получаем категории и подкатегории  -->
               <div class="CategoriesButton-link" v-for="category in categories">
                 <a :href="`/catalog/${category.id}`">
-                  <div class="CategoriesButton-icon"><img :src="category.image.src" :alt="category.image.alt"/>
-                  </div><span class="CategoriesButton-text">${ category.title }$</span>
+                  <div class="CategoriesButton-icon">
+                      <img :src="category.image.src" :alt="category.image.alt"/>
+                  </div>
+                    <span class="CategoriesButton-text">${ category.title }$</span>
                 </a>
                 <a v-if="category.subcategories.length > 0" class="CategoriesButton-arrow" href="#"></a>
 

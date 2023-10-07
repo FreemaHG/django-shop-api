@@ -22,7 +22,6 @@ DB_NAME = env("DB_NAME")
 DB_USER = env("DB_USER")
 DB_PASS = env("DB_PASS")
 DB_HOST = env("DB_HOST")
-DB_PORT = env("DB_PORT")
 
 # Redis
 REDIS_HOST = env("REDIS_HOST")
@@ -30,3 +29,9 @@ REDIS_PORT = env("REDIS_PORT")
 
 # Домен (ip) при развертывании на сервере
 DOMEN_HOST = env("DOMEN_HOST")
+
+# Статусы для мягкого удаления записей
+STATUS_CHOICES = [
+    (True, "Удалено"),
+    (False, "Активно"),
+]
