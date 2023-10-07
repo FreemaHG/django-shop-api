@@ -65,6 +65,12 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'src.megano.urls'
 
+# REST_FRAMEWORK = {
+#     'DEFAULT_PERMISSION_CLASSES': [
+#         'rest_framework.permissions.IsAuthenticated',
+#     ]
+# }
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -81,6 +87,16 @@ TEMPLATES = [
         },
     },
 ]
+
+CASHES = {
+    "default": {
+        # Кэширование в ОЗУ
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "unique-snowflake",
+        "TIMEOUT": 60 * 60 * 24,  # Кэширование на сутки
+        "OPTIONS": {"MAX_ENTRIES": 500},
+    }
+}
 
 WSGI_APPLICATION = 'src.megano.wsgi.application'
 
@@ -145,13 +161,10 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
-LANGUAGE_CODE = "ru-RU"
-
+LANGUAGE_CODE = "en-us"
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)

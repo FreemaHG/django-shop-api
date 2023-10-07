@@ -52,8 +52,12 @@ class Product(models.Model):
         """
         res = Review.objects.filter(product_id=self.id).aggregate(average_rate=Avg('rate'))
 
-        # Округляем рейтинг товара до 1 знака после запятой
-        return round(res["average_rate"], 1)
+        try:
+            # Округляем рейтинг товара до 1 знака после запятой
+            return round(res["average_rate"], 1)
+
+        except TypeError:
+            return 0
 
     class Meta:
         db_table = "products"

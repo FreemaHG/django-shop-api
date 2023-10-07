@@ -5,7 +5,7 @@ from rest_framework import serializers
 from src.api_shop.models.product import Product
 from src.api_shop.models.specification import Specification
 from src.api_shop.serializers.image import ImageSerializer
-from src.api_shop.serializers.review import ReviewSerializer
+from src.api_shop.serializers.review import ReviewOutSerializer
 from src.api_shop.serializers.tag import TagSerializer
 
 
@@ -25,8 +25,7 @@ class ProductSerializer(serializers.ModelSerializer):
     freeDelivery = serializers.BooleanField(source="free_delivery")
     images = ImageSerializer(many=True)
     tags = TagSerializer(many=True)
-    reviews = ReviewSerializer(many=True)
-
+    reviews = ReviewOutSerializer(many=True)
     specifications = SpecificationSerializer(many=True)
     rating = serializers.FloatField(source="average_rating")
     date = serializers.SerializerMethodField('date_format')

@@ -138,37 +138,52 @@
                 <header class="Section-header Section-header_product">
                   <h3 class="Section-title">Add Review</h3>
                 </header>
-                <div class="Tabs-addComment">
-                  <form class="form" @submit.prevent="submitReview">
-                    <div class="form-group">
-                      <textarea class="form-textarea" name="review" id="review" placeholder="Review" v-model="review.text"></textarea>
-                    </div>
-                    <div class="form-group">
-                      <div class="row">
-                        <div class="row-block">
-                          <input class="form-input" id="name" name="name" type="text" placeholder="Name" v-model="review.author"/>
+
+                <!-- Проверка, что пользователь авторизован -->
+                {% if request.user.is_authenticated %}
+                    <div class="Tabs-addComment">
+                      <form class="form" @submit.prevent="submitReview">
+                        <div class="form-group">
+                          <textarea class="form-textarea" name="review" id="review" placeholder="Review" v-model="review.text"></textarea>
                         </div>
-                        <div class="row-block">
-                          <input class="form-input" id="email" name="email" type="text" placeholder="Email" v-model="review.email"/>
+                        <div class="form-group">
+                          <div class="row">
+                            <div class="row-block">
+                              {% if request.user.last_name or request.user.first_name %}
+                                <input class="form-input" id="name" name="name" type="text" placeholder="{{ request.user.last_name }} {{ request.user.first_name }}" v-model="review.author"/>
+                              {% else %}
+                                <input class="form-input" id="name" name="name" type="text" placeholder="{{ request.user.username }}" v-model="review.author"/>
+                              {% endif %}
+                            </div>
+                            <div class="row-block">
+                              <input class="form-input" id="email" name="email" type="text" placeholder="{{ request.user.email }}" v-model="review.email"/>
+                            </div>
+                            <div class="row-block">
+                              <select name="rate" id="rate" v-model="review.rate">
+                                <optgroup label="rate">
+                                  <option value="1">1</option>
+                                  <option value="2">2</option>
+                                  <option value="3">3</option>
+                                  <option value="4">4</option>
+                                  <option value="5">5</option>
+                                </optgroup>
+                              </select>
+                            </div>
+                          </div>
                         </div>
-                        <div class="row-block">
-                          <select name="rate" id="rate" v-model="review.rate">
-                            <optgroup label="rate">
-                              <option value="1">1</option>
-                              <option value="2">2</option>
-                              <option value="3">3</option>
-                              <option value="4">4</option>
-                              <option value="5">5</option>
-                            </optgroup>
-                          </select>
+                        <div class="form-group">
+                          <button class="btn btn_muted" type="submit">Submit Review</button>
                         </div>
-                      </div>
+                      </form>
                     </div>
-                    <div class="form-group">
-                      <button class="btn btn_muted" type="submit">Submit Review</button>
-                    </div>
-                  </form>
-                </div>
+
+                {% else %}
+                  <p class="login_text">Только авторизованные пользователи могут оставлять комментарии. Пожалуйста,
+{#                    <a href="{% url 'user:login' %}">авторизуйтесь</a>.#}
+                    <a href="#">авторизуйтесь</a>.
+                  </p>
+                {% endif %}
+
               </div>
             </div>
           </div>
