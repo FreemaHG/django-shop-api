@@ -22,8 +22,17 @@ class ProductDetail(RetrieveAPIView):
     """
     Вывод данных о товаре (по pk в url)
     """
-    queryset = Product.objects.all()
     serializer_class = ProductSerializer
+
+    def get_queryset(self):
+        """
+        Вывод данных о товаре
+        """
+        # Извлекаем id товара из url
+        product_id = self.kwargs['pk']
+        queryset = Product.objects.filter(id=product_id, deleted=False)
+
+        return queryset
 
 
 class CategoriesList(ListModelMixin, GenericAPIView):

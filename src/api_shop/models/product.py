@@ -29,12 +29,6 @@ class Product(models.Model):
     description = models.TextField(max_length=1000, verbose_name="описание")
     tags = models.ManyToManyField(Tag, verbose_name="теги")
 
-    # images = models.ForeignKey(Image, on_delete=models.CASCADE, related_name="product", verbose_name="изображения")
-
-    # TODO Перенес связь в дочерние модели
-    # reviews = models.ForeignKey(Review, on_delete=models.CASCADE, verbose_name="отзывы")
-    # specifications = models.OneToOneField(Specification, on_delete=models.CASCADE, verbose_name="характеристики")
-
     # Мягкое удаление
     deleted = models.BooleanField(
         choices=STATUS_CHOICES, default=False, verbose_name="Статус"
@@ -47,18 +41,16 @@ class Product(models.Model):
         """
         # TODO Задать значение 2000 через конфиги сайта
         if self.price > 2000:
-            return Tag
+            return True
 
         return False
 
     @property
-    def rating(self):
+    def average_rating(self):
         """
         Расчет средней оценки товара на основе всех отзывов
         """
-        res = Review.objects.filter(product=self.objects).aggregate(average_rate=Avg('rate'))
-        # TODO Удалить после проверки!
-        logger.debug(f"Средняя оценка товара: {res}")
+        res = Review.objects.filter(product_id=self.id).aggregate(average_rate=Avg('rate'))
 
         # Округляем рейтинг товара до 1 знака после запятой
         return round(res["average_rate"], 1)

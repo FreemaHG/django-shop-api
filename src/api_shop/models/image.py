@@ -12,7 +12,7 @@ class ImageForProduct(models.Model):
     """
     Модель для хранения данных об изображениях товаров
     """
-    src = models.ImageField(upload_to=save_img_for_product, verbose_name="изображение")
+    path = models.ImageField(upload_to=save_img_for_product, verbose_name="изображение")
     alt = models.CharField(max_length=250, verbose_name="alt")
     product = models.ForeignKey("Product", on_delete=models.CASCADE, verbose_name="товар", related_name="images")
 
@@ -21,8 +21,15 @@ class ImageForProduct(models.Model):
         verbose_name = "изображение"
         verbose_name_plural = "изображения"
 
+    @property
+    def src(self) -> str:
+        """
+        Переопределяем path для подстановки в frontend и корректного отображения картинки
+        """
+        return f"/{self.path}"
+
     def __str__(self) -> str:
-        return str(self.src)
+        return str(self.path)
 
 
 class ImageForCategory(models.Model):
@@ -51,4 +58,4 @@ class ImageForCategory(models.Model):
         return f"/{self.path}"
 
     def __str__(self) -> str:
-        return str(self.src)
+        return str(self.path)
