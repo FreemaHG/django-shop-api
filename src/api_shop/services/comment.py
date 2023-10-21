@@ -5,16 +5,9 @@ from django.contrib.auth.models import User
 from django.core.cache import cache
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import QuerySet
-from django.http import HttpRequest
 
 from src.api_shop.models.review import Review
 from src.api_shop.services.product import ProductService
-
-# from config.admin import config
-# from app.config.utils.configuration import get_config
-# from app.app_user.models import Buyer, Profile
-# from app.app_shop.models.products import Product, ProductReviews
-# from app.app_shop.forms import CommentProductForm
 
 
 logger = logging.getLogger(__name__)

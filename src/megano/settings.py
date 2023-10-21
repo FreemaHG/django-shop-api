@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'frontend',
     'rest_framework',
+    'rest_framework.authtoken',  # Проверка токенов для аутентификации пользователя
     "src.api_user.apps.AppUserConfig",
     "src.api_shop.apps.AppShopConfig",
     'drf_yasg',  # Документация Swagger
@@ -65,11 +66,19 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'src.megano.urls'
 
-# REST_FRAMEWORK = {
-#     'DEFAULT_PERMISSION_CLASSES': [
-#         'rest_framework.permissions.IsAuthenticated',
-#     ]
-# }
+REST_FRAMEWORK = {
+    # Аутентификация
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        # 'rest_framework.authentication.BasicAuthentication',
+        # TODO Попробовать с этим
+        'rest_framework.authentication.SessionAuthentication',
+        # 'rest_framework.authentication.TokenAuthentication',
+    ],
+    # Проверка прав (аутентификации)
+    # 'DEFAULT_PERMISSION_CLASSES': [
+    #     'rest_framework.permissions.IsAuthenticated',
+    # ]
+}
 
 TEMPLATES = [
     {
@@ -134,7 +143,7 @@ DATABASES = {
         'ENGINE': 'mysql.connector.django',
         'NAME': DB_NAME,
         'USER': DB_USER,
-        'PASSWORD': DB_PASS
+        'PASSWORD': DB_PASS,
     },
 }
 
@@ -162,9 +171,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
 LANGUAGE_CODE = "en-us"
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Moscow'
 USE_I18N = True
-USE_TZ = False
+USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)

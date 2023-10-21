@@ -2,17 +2,13 @@ import logging
 
 from django.http import JsonResponse
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework import viewsets
 from rest_framework.generics import RetrieveAPIView, GenericAPIView
 from rest_framework.mixins import ListModelMixin, CreateModelMixin
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
-from rest_framework.views import APIView
 
 from src.api_shop.models.product import Product
 from src.api_shop.models.category import Category
+from src.api_shop.models.review import Review
 from src.api_shop.models.tag import Tag
-from src.api_shop.models.image import ImageForCategory
 from src.api_shop.serializers.category import CategorySerializer
 from src.api_shop.serializers.product import ProductSerializer
 from src.api_shop.serializers.review import ReviewInSerializer, ReviewOutSerializer
@@ -29,6 +25,7 @@ class CategoriesListView(ListModelMixin, GenericAPIView):
     queryset = Category.objects.filter(deleted=False, parent=None)  # Активные родительские категории
     serializer_class = CategorySerializer
 
+    @swagger_auto_schema(tags=['catalog'])
     def get(self, request):
         return self.list(request)
 
@@ -39,6 +36,10 @@ class TagListView(ListModelMixin, GenericAPIView):
     """
     queryset = Tag.objects.filter(deleted=False)  # Только активные теги
     serializer_class = TagSerializer
+
+    @swagger_auto_schema(tags=['tags'])
+    def get(self, request):
+        return self.list(request)
 
 
 class ProductDetailView(RetrieveAPIView):
@@ -53,20 +54,21 @@ class ReviewCreateView(CreateModelMixin, GenericAPIView):
     """
     Добавление отзыва к товару
     """
+    queryset = Review.objects.all()
     serializer_class = ReviewInSerializer
-    permission_classes = [IsAuthenticated]  # Разрешено только авторизованным пользователям
+    # permission_classes = [IsAuthenticated]  # Разрешено только авторизованным пользователям
 
     def post(self, request, format=None, *args, **kwargs):
-        product_id = kwargs["pk"]  # id товара
+        self.product_id = kwargs["pk"]  # id товара
 
-        # Добавляем новый комментарий
+        # Создаем новый комментарий
         CommentsService.add_new_comments(
-            product_id=product_id,
+            product_id=self.product_id,
             user=request.user,
             data=request.data
         )
 
-        comments = CommentsService.all_comments(product_id=product_id)  # Все комментарии товара
+        comments = CommentsService.all_comments(product_id=self.product_id)  # Все комментарии товара
         serializer = ReviewOutSerializer(comments, many=True)  # Валидация данных (many=True - список)
 
         # Сериализуем данные и отправляем Json
