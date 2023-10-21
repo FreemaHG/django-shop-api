@@ -19,6 +19,9 @@ class SpecificationSerializer(serializers.ModelSerializer):
 
 
 class ProductSerializer(serializers.ModelSerializer):
+    """
+    Схема для товара
+    """
 
     description = serializers.CharField(source="short_description")
     fullDescription = serializers.CharField(source="description")

@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-from src.api_user.utils import save_avatar
+from src.megano.utils.save_img import save_avatar
 from src.config import STATUS_CHOICES
 from django.db import models
 
@@ -10,13 +10,9 @@ class Profile(models.Model):
     """
     Модель для хранения доп.данных о пользователе (профайл)
     """
-
     user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name="пользователь")
     full_name = models.CharField(max_length=150, verbose_name="ФИО")
-    # phone = models.CharField(unique=True, max_length=10, null=True, verbose_name="телефон")
-
-    # TODO Нежен ли адрес?
-    # address = models.CharField(max_length=255, blank=True, verbose_name="Адрес")
+    phone = models.CharField(unique=True, max_length=10, null=True, verbose_name="телефон")
     deleted = models.BooleanField(choices=STATUS_CHOICES, default=False, verbose_name="Статус")  # Мягкое удаление
 
     class Meta:

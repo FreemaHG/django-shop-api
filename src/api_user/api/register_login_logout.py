@@ -9,8 +9,8 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 
-from src.api_user.serializers import UserRegisterSerializer
-from src.api_user.serializers import UserLoginSerializer
+from src.api_user.serializers.login_and_register import UserRegisterSerializer
+from src.api_user.serializers.login_and_register import UserLoginSerializer
 
 
 logger = logging.getLogger(__name__)

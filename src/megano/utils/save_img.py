@@ -5,6 +5,7 @@ logger = logging.getLogger(__name__)
 
 _PRODUCTS_PATH = os.path.join("images", "products")
 _CATEGORIES_PATH = os.path.join("images", "categories")
+_AVATARS_PATH = os.path.join("images", "avatars")
 
 
 def save_img_for_product(instance, filename: str) -> str:
@@ -33,3 +34,16 @@ def save_img_for_category(instance, filename: str) -> str:
 
     # Сохраняем файлы в директорию с фронтендом
     return os.path.join("static", _CATEGORIES_PATH, f"{instance.category.id}", f"{filename}")
+
+
+def save_avatar(instance, filename: str) -> str:
+    """
+    Функция для сохранения аватара пользователя
+
+    @param instance: объект профайла
+    @param filename: название файла
+    @return: path
+    """
+    logger.debug("Сохранение аватара пользователя")
+
+    return os.path.join("static", _AVATARS_PATH, f"{instance.profile.user.username}", f"{filename}")
