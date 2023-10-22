@@ -2,7 +2,7 @@ from django.urls import path, include
 from rest_framework import routers
 
 from src.api_user.api.register_login_logout import register_user, user_login, user_logout
-from src.api_user.api.profile import profile
+from src.api_user.api.profile import update_avatar, update_password, ProfileView
 
 
 urlpatterns = [
@@ -14,14 +14,14 @@ urlpatterns = [
     ])),
     # Профайл
     path('profile/', include([
-        path('', profile, name='profile'),
-        # 'password/',
-        # 'avatar/',
+        path('password/', update_password, name='update-password'),
+        path('avatar/', update_avatar, name='update-profile'),
+        path('', ProfileView.as_view(), name='profile'),
     ]))
 
 ]
 
 # router = routers.SimpleRouter()
 #
-# router.register(r'profile', ProfileViewSet, basename='profile')
+# router.register(r'profile', ProfileView, basename='profile')
 # urlpatterns += router.urls
