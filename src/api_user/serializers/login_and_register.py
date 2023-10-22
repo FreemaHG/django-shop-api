@@ -32,6 +32,3 @@ class UserRegisterSerializer(UserLoginSerializer):
         Profile.objects.create(full_name=validated_data['name'], user=user)
 
         return user
-
-
-

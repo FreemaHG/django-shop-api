@@ -24,7 +24,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path("", include("frontend.urls")),
     path("api/", include("src.api_shop.urls")),
-    path("api/sign-", include("src.api_user.urls")),
+    path("api/", include("src.api_user.urls")),
     # Документация Swagger
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
 
