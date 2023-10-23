@@ -2,6 +2,7 @@ import logging
 
 from django.http import JsonResponse
 from drf_yasg.utils import swagger_auto_schema
+from rest_framework import viewsets
 from rest_framework.generics import RetrieveAPIView, GenericAPIView
 from rest_framework.mixins import ListModelMixin, CreateModelMixin
 
@@ -10,7 +11,7 @@ from src.api_shop.models.category import Category
 from src.api_shop.models.review import Review
 from src.api_shop.models.tag import Tag
 from src.api_shop.serializers.category import CategorySerializer
-from src.api_shop.serializers.product import ProductSerializer
+from src.api_shop.serializers.product import ProductShortSerializer, ProductFullSerializer
 from src.api_shop.serializers.review import ReviewInSerializer, ReviewOutSerializer
 from src.api_shop.serializers.tag import TagSerializer
 from src.api_shop.services.comment import CommentsService
@@ -47,7 +48,7 @@ class ProductDetailView(RetrieveAPIView):
     Вывод данных о товаре (по pk в url)
     """
     queryset = Product.objects.filter(deleted=False)  # Активные товары
-    serializer_class = ProductSerializer
+    serializer_class = ProductFullSerializer
 
 
 class ReviewCreateView(CreateModelMixin, GenericAPIView):
@@ -73,4 +74,27 @@ class ReviewCreateView(CreateModelMixin, GenericAPIView):
 
         # Сериализуем данные и отправляем Json
         # safe=False - разрешаем сериализацию данных, не являющихся словарем (получаем список с OrderedDict)
+        return JsonResponse(serializer.data, safe=False)
+
+
+class LimitedProductsView(viewsets.ViewSet):
+    """
+    Вывод товаров ограниченной серии
+    """
+
+    @swagger_auto_schema(
+        tags=['catalog'],
+        responses={
+            200: ProductShortSerializer(many=TagSerializer)
+        }
+    )
+    def list(self, request):
+        """
+        Get catalog limeted items
+        """
+        logger.debug("Вывод лимитированных товаров")
+
+        queryset = Product.objects.filter(count__lte=50)
+        serializer = ProductShortSerializer(queryset, many=True)
+
         return JsonResponse(serializer.data, safe=False)

@@ -35,7 +35,13 @@ class Product(models.Model):
     )
 
     @property
-    def free_delivery(self):
+    def reviews_count(self) -> int:
+        """
+        Кол-во отзывов у товара
+        """
+        return self.reviews.all().count()
+
+    def free_delivery(self) -> bool:
         """
         Определение стоимости доставки в зависимости от стоимости товара
         """
@@ -46,7 +52,7 @@ class Product(models.Model):
         return False
 
     @property
-    def average_rating(self):
+    def average_rating(self) -> int:
         """
         Расчет средней оценки товара на основе всех отзывов
         """
