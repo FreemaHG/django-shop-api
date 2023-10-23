@@ -18,20 +18,18 @@ class SpecificationSerializer(serializers.ModelSerializer):
         fields = ['name', 'value']
 
 
-class ProductSerializer(serializers.ModelSerializer):
+class ProductShortSerializer(serializers.ModelSerializer):
     """
-    Схема для товара
+    Схема для товара (короткая)
     """
 
+    date = serializers.SerializerMethodField('date_format')
     description = serializers.CharField(source="short_description")
-    fullDescription = serializers.CharField(source="description")
     freeDelivery = serializers.BooleanField(source="free_delivery")
     images = ImageSerializer(many=True)
     tags = TagSerializer(many=True)
-    reviews = ReviewOutSerializer(many=True)
-    specifications = SpecificationSerializer(many=True)
+    reviews = serializers.IntegerField(source="reviews_count")  # Кол-во отзывов
     rating = serializers.FloatField(source="average_rating")
-    date = serializers.SerializerMethodField('date_format')
 
     def date_format(self, obj):
         """
@@ -49,11 +47,22 @@ class ProductSerializer(serializers.ModelSerializer):
             'date',
             'title',
             'description',
-            'fullDescription',
             'freeDelivery',
             'images',
             'tags',
             'reviews',
-            'specifications',
             'rating'
         ]
+
+
+class ProductFullSerializer(ProductShortSerializer):
+    """
+    Схема для товара (полная). Для страницы товара.
+    """
+    fullDescription = serializers.CharField(source="description")
+    reviews = ReviewOutSerializer(many=True)  # Список с отзывами
+    specifications = SpecificationSerializer(many=True)
+
+    class Meta:
+        model = Product
+        fields = '__all__'
