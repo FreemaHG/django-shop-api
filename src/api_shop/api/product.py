@@ -94,7 +94,31 @@ class LimitedProductsView(viewsets.ViewSet):
         """
         logger.debug("Вывод лимитированных товаров")
 
-        queryset = Product.objects.filter(count__lte=50)
+        queryset = Product.objects.filter(count__lte=50)[:10]
+        serializer = ProductShortSerializer(queryset, many=True)
+
+        return JsonResponse(serializer.data, safe=False)
+
+
+class BannersProductsView(viewsets.ViewSet):
+    """
+    Вывод товаров для банера (акции)
+    """
+
+    @swagger_auto_schema(
+        tags=['catalog'],
+        responses={
+            200: ProductShortSerializer(many=TagSerializer)
+        }
+    )
+    def list(self, request):
+        """
+        Get banner items
+        """
+        logger.debug("Вывод товаров для баннера")
+
+        # FIXME Задать условие для вывода 3 случайных товаров для акций
+        queryset = Product.objects.filter(count__lte=50)[:3]
         serializer = ProductShortSerializer(queryset, many=True)
 
         return JsonResponse(serializer.data, safe=False)
