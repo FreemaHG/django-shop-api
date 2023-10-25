@@ -7,6 +7,7 @@ from src.api_shop.models.image import ImageForCategory, ImageForProduct
 from src.api_shop.models.review import Review
 from src.api_shop.models.specification import Specification
 from src.api_shop.models.tag import Tag
+from src.api_shop.models.sales import SaleItem
 from src.api_shop.utils.admin.soft_remove import soft_remove_child_records
 
 
@@ -200,6 +201,15 @@ class ChoiceImages(admin.TabularInline):
     extra = 0
 
 
+class ChoiceSales(admin.TabularInline):
+    """
+    Вывод записей о распродаже товара
+    """
+
+    model = SaleItem
+    extra = 0
+
+
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     """
@@ -220,13 +230,14 @@ class ProductAdmin(admin.ModelAdmin):
     search_fields = ("title",)
     list_editable = ("deleted",)
 
+    # FIXME Добавлять при помощи миксина
     # Мягкое удаление/восстановление записей
     actions = (
         deleted_records,
         restore_records,
     )
 
-    inlines = (ChoiceReviews, ChoiceSpecifications, ChoiceImages)
+    inlines = (ChoiceSales, ChoiceReviews, ChoiceSpecifications, ChoiceImages)
 
     fieldsets = (
         (
@@ -266,3 +277,45 @@ class ProductAdmin(admin.ModelAdmin):
         return obj.title
 
     short_name.short_description = "Название товара"
+
+
+@admin.register(SaleItem)
+class SaleAdmin(admin.ModelAdmin):
+    """
+    Админ-панель для записей о распродажах товаров
+    """
+    list_display = (
+        "id",
+        "product_name",
+        "sale_price",
+        "discount",
+        "date_from",
+        "date_to",
+        "deleted",
+    )
+    list_display_links = ("product_name",)
+    search_fields = ("product_name",)
+    list_editable = ("deleted",)
+
+    # FIXME Добавлять при помощи миксина
+    # Мягкое удаление/восстановление записей
+    actions = (
+        deleted_records,
+        restore_records,
+    )
+
+    def product_name(self, obj):
+        """
+        Возврат названия товара
+        """
+        return obj.product.title[:150]
+
+    product_name.short_description = "Товар"
+
+    def discount(self, obj):
+        """
+        Вывод скидки
+        """
+        return obj.discount
+
+    discount.short_description = " Скидка"

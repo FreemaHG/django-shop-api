@@ -8,6 +8,7 @@ from src.api_shop.api.product import (
     ReviewCreateView,
     LimitedProductsView,
     BannersProductsView,
+    PopularProductsView,
 )
 
 urlpatterns = [
@@ -27,5 +28,6 @@ router = routers.SimpleRouter()
 # ВАЖНО: т.к. в представлениях нет queryset / get_queryset(), то basename обязательно!
 router.register(r'products/limited', LimitedProductsView, basename='limited-products')
 router.register(r'banners', BannersProductsView, basename='banner')
+router.register(r'products/popular', PopularProductsView, basename='popular-products')
 
 urlpatterns += router.urls

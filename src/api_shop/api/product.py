@@ -108,7 +108,7 @@ class BannersProductsView(viewsets.ViewSet):
     @swagger_auto_schema(
         tags=['catalog'],
         responses={
-            200: ProductShortSerializer(many=TagSerializer)
+            200: ProductShortSerializer(many=True)
         }
     )
     def list(self, request):
@@ -119,6 +119,30 @@ class BannersProductsView(viewsets.ViewSet):
 
         # FIXME Задать условие для вывода 3 случайных товаров для акций
         queryset = Product.objects.filter(count__lte=50)[:3]
+        serializer = ProductShortSerializer(queryset, many=True)
+
+        return JsonResponse(serializer.data, safe=False)
+
+
+class PopularProductsView(viewsets.ViewSet):
+    """
+    Вывод популярных товаров
+    """
+
+    @swagger_auto_schema(
+        tags=['catalog'],
+        responses={
+            200: ProductShortSerializer(many=True)
+        }
+    )
+    def list(self, request):
+        """
+        Get catalog popular items
+        """
+        logger.debug("Вывод популярных товаров")
+
+        # FIXME Задать условие для вывода товаров (сортировка по средней оценке отзывов и кол-ву продаж)
+        queryset = Product.objects.all()
         serializer = ProductShortSerializer(queryset, many=True)
 
         return JsonResponse(serializer.data, safe=False)
