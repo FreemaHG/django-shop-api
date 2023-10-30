@@ -9,6 +9,7 @@ from src.api_shop.api.product import (
     LimitedProductsView,
     BannersProductsView,
     PopularProductsView,
+    SalesView,
 )
 
 urlpatterns = [
@@ -29,5 +30,6 @@ router = routers.SimpleRouter()
 router.register(r'products/limited', LimitedProductsView, basename='limited-products')
 router.register(r'banners', BannersProductsView, basename='banner')
 router.register(r'products/popular', PopularProductsView, basename='popular-products')
+router.register(r'sales', SalesView, basename='sales')
 
 urlpatterns += router.urls

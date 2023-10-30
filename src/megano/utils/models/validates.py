@@ -29,12 +29,12 @@ def validate_date_to(obj):
     Валидатор проверяет, что дата окончания распродажи товара позже даты начала распродажи,
     а также что дата не является текущей или ранее текущей.
     """
-    current_date = datetime.datetime.now()
+    # current_date = datetime.datetime.now()
     date_from = obj.date_from.replace(tzinfo=None)
     date_to = obj.date_to.replace(tzinfo=None)
 
     if date_to <= date_from:
         raise ValidationError('Дата окончания распродажи не может быть раньше или равна даты начала распродажи')
 
-    elif date_to <= current_date:
-        raise ValidationError('Дата окончания распродажи не может быть раньше или равна текущей дате')
+    # elif date_to <= current_date:
+    #     raise ValidationError('Дата окончания распродажи не может быть раньше или равна текущей дате')

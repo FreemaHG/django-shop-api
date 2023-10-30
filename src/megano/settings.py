@@ -67,6 +67,11 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'src.megano.urls'
 
 REST_FRAMEWORK = {
+    # Пагинация
+    # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    # 'DEFAULT_PAGINATION_CLASS': 'src.api_shop.api.product.CustomPagination',
+    # 'PAGE_SIZE': 1,
+
     # Аутентификация
     'DEFAULT_AUTHENTICATION_CLASSES': [
         # 'rest_framework.authentication.BasicAuthentication',
@@ -74,6 +79,7 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
         # 'rest_framework.authentication.TokenAuthentication',
     ],
+
     # Проверка прав (аутентификации)
     # 'DEFAULT_PERMISSION_CLASSES': [
     #     'rest_framework.permissions.IsAuthenticated',
