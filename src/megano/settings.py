@@ -69,7 +69,7 @@ ROOT_URLCONF = 'src.megano.urls'
 REST_FRAMEWORK = {
     # Пагинация
     # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    # 'DEFAULT_PAGINATION_CLASS': 'src.api_shop.api.product.CustomPagination',
+    # 'DEFAULT_PAGINATION_CLASS': 'src.megano.utils.pagination.CustomPagination',
     # 'PAGE_SIZE': 1,
 
     # Аутентификация

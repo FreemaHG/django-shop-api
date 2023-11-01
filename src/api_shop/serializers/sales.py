@@ -4,7 +4,7 @@ from rest_framework import serializers
 
 from src.api_shop.models.sales import SaleItem
 from src.api_shop.serializers.image import ImageSerializer
-
+from src.api_shop.serializers.pagination import PaginationSerializerMixin
 
 logger = logging.getLogger(__name__)
 
@@ -57,11 +57,8 @@ class SaleItemSerializer(serializers.ModelSerializer):
         ]
 
 
-class SalesSerializer(serializers.Serializer):
+class SalesSerializer(PaginationSerializerMixin):
     """
     Схема для вывода списка предложений с товарами на распродаже
     """
     items = SaleItemSerializer(many=True)
-
-    class Meta:
-        fields = ['items']

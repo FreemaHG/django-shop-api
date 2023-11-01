@@ -1,12 +1,16 @@
-from typing import List
+import logging
 
 from rest_framework import serializers
 
 from src.api_shop.models.product import Product
 from src.api_shop.models.specification import Specification
 from src.api_shop.serializers.image import ImageSerializer
+from src.api_shop.serializers.pagination import PaginationSerializerMixin
 from src.api_shop.serializers.review import ReviewOutSerializer
 from src.api_shop.serializers.tag import TagSerializer
+
+
+logger = logging.getLogger(__name__)
 
 
 class SpecificationSerializer(serializers.ModelSerializer):
@@ -66,3 +70,10 @@ class ProductFullSerializer(ProductShortSerializer):
     class Meta:
         model = Product
         fields = '__all__'
+
+
+class CatalogSerializer(PaginationSerializerMixin):
+    """
+    Схема для вывода каталога товаров
+    """
+    items = ProductShortSerializer(many=True)
