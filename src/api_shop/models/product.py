@@ -8,7 +8,6 @@ from django.core.cache import cache
 from src.config import STATUS_CHOICES
 from src.api_shop.models.category import Category
 from src.api_shop.models.tag import Tag
-from src.api_shop.models.specification import Specification
 from src.api_shop.models.review import Review
 
 
@@ -20,14 +19,14 @@ class Product(models.Model):
     """
     Модель для хранения данных о товарах
     """
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, verbose_name="категория")
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="products", verbose_name="категория")
     price = models.FloatField(validators=[MinValueValidator(0)], verbose_name="цена")
     count = models.PositiveIntegerField(default=0, verbose_name="кол-во")
     date = models.DateTimeField(auto_now_add=True, verbose_name="время добавления")
     title = models.CharField(max_length=250, verbose_name="название")
     short_description = models.CharField(max_length=500, verbose_name="краткое описание")
     description = models.TextField(max_length=1000, verbose_name="описание")
-    tags = models.ManyToManyField(Tag, verbose_name="теги")
+    tags = models.ManyToManyField(Tag, related_name="products", verbose_name="теги")
 
     # Мягкое удаление
     deleted = models.BooleanField(
@@ -70,6 +69,19 @@ class Product(models.Model):
         verbose_name = "товар"
         verbose_name_plural = "товары"
         ordering = ["id"]
+
+    def save(self, *args, **kwargs):
+        """
+        Добавляем запись об используемых тегах в категорию товара
+        (для быстрого вывода всех тегов товаров определенной категории)
+        """
+        chair_tags = self.category.tags.all()
+
+        for tag in self.tags.all():
+            if tag not in chair_tags:
+                self.category.tags.add(tag)
+
+        super(Product, self).save(*args, **kwargs)
 
     def __str__(self) -> str:
         return str(self.title)

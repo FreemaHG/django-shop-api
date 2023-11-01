@@ -82,7 +82,9 @@ var mix = {
 
         if(location.pathname.startsWith('/catalog/')) {
             const category = location.pathname.replace('/catalog/', '')
-            this.category = category.length ? Number(category) : null
+            // category.slice(0, -1) - чтобы убрать слэш в конце распознанной строки "4/" -> "4"
+            // для дальнейшего преобразования в число и передачу на backend
+            this.category = category.length ? Number(category.slice(0, -1)) : null
         }
 
         this.getCatalogs()
