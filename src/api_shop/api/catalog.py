@@ -135,11 +135,9 @@ class SalesView(ListModelMixin, viewsets.GenericViewSet):
             serializer = self.get_serializer(page, many=True)
             return self.get_paginated_response(serializer.data)
 
-        # serializer = SalesSerializer({"items": queryset})
         serializer = SaleItemSerializer(queryset, many=True)
 
         return JsonResponse(serializer.data, safe=False)
-
 
 
 class CatalogView(ListModelMixin, viewsets.GenericViewSet):
@@ -163,9 +161,10 @@ class CatalogView(ListModelMixin, viewsets.GenericViewSet):
         logger.debug("Вывод каталога с товарами")
 
         query_params = request.query_params.dict()
-        products = CatalogService.get_products(query_params=query_params)
+        tags = request.GET.getlist('tags[]')
 
-        queryset = Product.objects.all()
+        # Получаем отфильтрованные товары
+        queryset = CatalogService.get_products(query_params=query_params, tags=tags)
 
         # Пагинация
         # FIXME Вынести, не дублировать!!!
