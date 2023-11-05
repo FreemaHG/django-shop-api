@@ -41,7 +41,7 @@ class LimitedProductsView(viewsets.ViewSet):
     @swagger_auto_schema(
         tags=['catalog'],
         responses={
-            200: ProductShortSerializer(many=TagSerializer)
+            200: ProductShortSerializer(many=True)
         }
     )
     def list(self, request):

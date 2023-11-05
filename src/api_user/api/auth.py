@@ -36,6 +36,7 @@ def register_user(request):
     data = json.loads(request.body)
     serializer = UserRegisterSerializer(data=data)
 
+    # FIXME Обновлять записи с товарами в корзине, если есть
     if serializer.is_valid():
         user = serializer.save()  # Создаем и возвращаем нового пользователя в методе create() в схеме
         # Аутентификация
@@ -68,6 +69,7 @@ def user_login(request):
     data = json.loads(request.body)
     serializer = UserLoginSerializer(data=data)
 
+    # FIXME Обновлять записи с товарами в корзине, если есть
     if serializer.is_valid(raise_exception=True):
         user = authenticate(username=data['username'], password=data['password'])  # Аутентификация
         login(request, user)  # Авторизация нового пользователя
