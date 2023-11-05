@@ -8,6 +8,7 @@ from src.api_shop.models.review import Review
 from src.api_shop.models.specification import Specification
 from src.api_shop.models.tag import Tag
 from src.api_shop.models.sales import SaleItem
+from src.api_shop.models.basket import Basket
 from src.api_shop.utils.admin.soft_remove import soft_remove_child_records
 
 
@@ -35,14 +36,6 @@ def restore_records(adminmodel, request, queryset):
     Восстановить записи, отключенные ч/з мягкое удаление (смена статуса)
     """
     queryset.update(deleted=False)
-
-
-# @admin.register(Image)
-# class ImageAdmin(admin.ModelAdmin):
-#     """
-#     Админ-панель для изображений
-#     """
-#     list_display = ['id', 'src', 'alt']
 
 
 @admin.register(Tag)
@@ -319,3 +312,12 @@ class SaleAdmin(admin.ModelAdmin):
         return obj.discount
 
     discount.short_description = " Скидка"
+
+@admin.register(Basket)
+class BasketAdmin(admin.ModelAdmin):
+    """
+    Админ-панель для корзин с товарами пользователей
+    """
+
+    list_display = ("id", "user", "product", "count", "price")
+    # list_display_links = ("product_title",)

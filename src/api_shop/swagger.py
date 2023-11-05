@@ -55,3 +55,13 @@ limit = openapi.Parameter(
     type=openapi.TYPE_NUMBER,
     default=20
 )
+
+basket_data = openapi.Parameter(
+    'data',
+    openapi.IN_QUERY,
+    type=openapi.TYPE_OBJECT,
+    value={
+          "id": 123,
+          "count": 5
+        }
+)

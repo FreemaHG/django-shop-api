@@ -5,3 +5,4 @@ from src.api_shop.models.review import Review
 from src.api_shop.models.specification import Specification
 from src.api_shop.models.tag import Tag
 from src.api_shop.models.sales import SaleItem
+from src.api_shop.models.basket import Basket

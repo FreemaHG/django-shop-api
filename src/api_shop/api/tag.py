@@ -1,6 +1,7 @@
 import logging
 
-from django.http import JsonResponse
+from django.core.exceptions import ObjectDoesNotExist
+from django.http import JsonResponse, HttpResponse
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import viewsets
 
@@ -26,8 +27,16 @@ class TagListView(viewsets.ViewSet):
     )
     def list(self, request):
         category_id = request.query_params.get("category", None)  # Извлекаем id категории из URL
+
         # Все теги, встречающиеся в данной категории товара
-        tags = Category.objects.get(id=category_id).tags.filter(deleted=False)
+        try:
+            tags = Category.objects.get(id=category_id).tags.filter(deleted=False)
+
+        except ObjectDoesNotExist:
+            logger.error("Теги не найдены")
+
+            return HttpResponse("Теги не найдены")
+
         serializer = TagSerializer(tags, many=True)
 
         return JsonResponse(serializer.data, safe=False)

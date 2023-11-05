@@ -17,6 +17,8 @@ from src.api_shop.api.catalog import (
     CatalogView,
 )
 
+from src.api_shop.api.basket import BasketView
+
 
 urlpatterns = [
     path('categories/', CategoriesListView.as_view(), name='categories'),
@@ -24,6 +26,7 @@ urlpatterns = [
         path('<int:pk>/', ProductDetailView.as_view(), name='product-detail'),
         path('<int:pk>/reviews/', ReviewCreateView.as_view(), name='create-review'),
     ])),
+    path('basket/', BasketView.as_view(), name='basket'),
 ]
 
 
@@ -35,5 +38,6 @@ router.register(r'products/popular', PopularProductsView, basename='popular-prod
 router.register(r'sales', SalesView, basename='sales')
 router.register(r'catalog', CatalogView, basename='catalog')
 router.register(r'tags', TagListView, basename='tags')
+# router.register(r'basket', BasketView, basename='basket')
 
 urlpatterns += router.urls

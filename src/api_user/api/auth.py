@@ -9,6 +9,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 
+from src.api_shop.services.basket import BasketService
 from src.api_user.serializers.login_and_register import UserRegisterSerializer
 from src.api_user.serializers.login_and_register import UserLoginSerializer
 
@@ -36,11 +37,14 @@ def register_user(request):
     data = json.loads(request.body)
     serializer = UserRegisterSerializer(data=data)
 
+    # FIXME Обновлять записи с товарами в корзине, если есть
     if serializer.is_valid():
         user = serializer.save()  # Создаем и возвращаем нового пользователя в методе create() в схеме
         # Аутентификация
         user = authenticate(username=user.username, password=serializer.validated_data["password"])
         login(request, user)  # Авторизация нового пользователя
+
+        BasketService.merger(request=request, user=user)  # Слияние корзин
 
         return Response(status=status.HTTP_201_CREATED)
 
@@ -68,11 +72,14 @@ def user_login(request):
     data = json.loads(request.body)
     serializer = UserLoginSerializer(data=data)
 
+    # FIXME Обновлять записи с товарами в корзине, если есть
     if serializer.is_valid(raise_exception=True):
         user = authenticate(username=data['username'], password=data['password'])  # Аутентификация
         login(request, user)  # Авторизация нового пользователя
-
         logging.info(f"Пользователь аутентифицирован")
+
+        BasketService.merger(request=request, user=user)  # Слияние корзин
+
         return Response(None, status=status.HTTP_200_OK)
 
     else:
