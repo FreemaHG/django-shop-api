@@ -30,7 +30,7 @@ class BasketService:
 
 
     @classmethod
-    def add(cls, request):
+    def add(cls, request: HttpRequest) -> QuerySet:
         """
         Добавление товара в корзину
         """
@@ -59,7 +59,7 @@ class BasketService:
 
 
     @classmethod
-    def delete(cls, request):
+    def delete(cls, request: HttpRequest) -> QuerySet:
         """
         Удаление товара из корзины
         """
@@ -80,12 +80,43 @@ class BasketService:
 
 
     @classmethod
-    def merger(cls, request):
+    def merger(cls, request: HttpRequest, user: User) -> None:
         """
         Объединение корзин при регистрации и авторизации пользователя
         """
         logger.debug("Объединение корзин")
-        ...
+
+        records = request.session.get("basket", False)
+        new_records = []
+
+        if records:
+            logger.debug(f"Имеются данные для слияния: {records}")
+
+            for prod_id, count in records.items():
+                # Проверка, есть ли товар уже в корзине зарегистрированного пользователя
+                try:
+                    deferred_product = Basket.objects.get(user=user, product_id=prod_id)
+                    deferred_product.count += count  # Суммируем кол-во товара
+                    deferred_product.save(update_fields=["count"])
+                    logger.debug("Кол-во товара увеличено")
+
+                except ObjectDoesNotExist:
+                    deferred_product = Basket.objects.create(
+                        user=user,
+                        product_id=prod_id,
+                        count=count
+                    )
+
+                    new_records.append(deferred_product)
+                    logger.debug("Новый товар добавлен в корзину")
+
+            logger.info("Корзины объединены")
+
+            del request.session["basket"]  # Удаляем записи из сессии
+            request.session.save()
+
+        else:
+            logger.warning("Нет записей для слияния")
 
 
 class BasketSessionService:
@@ -132,7 +163,7 @@ class BasketSessionService:
         return records_list
 
     @classmethod
-    def add(cls, request) -> List:
+    def add(cls, request: HttpRequest) -> List:
         """
         Добавление товара в корзину гостя
         """
@@ -157,7 +188,7 @@ class BasketSessionService:
         return cls.get_basket(request)  # Возврат всех товаров в корзине
 
     @classmethod
-    def delete(cls, request):
+    def delete(cls, request: HttpRequest) -> List:
         """
         Удаление товара из корзины гостя
         """
