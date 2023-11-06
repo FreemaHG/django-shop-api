@@ -9,7 +9,7 @@
           <h1 class="Middle-title">Оформление заказа
           </h1>
           <ul class="breadcrumbs Middle-breadcrumbs">
-            <li class="breadcrumbs-item"><a href="/diploma-frontend/frontend/static">Home</a>
+            <li class="breadcrumbs-item"><a href="/">Home</a>
             </li>
             <li class="breadcrumbs-item breadcrumbs-item_current"><span>Оформление заказа</span>
             </li>
@@ -53,15 +53,15 @@
                 <div class="row-block">
                   <div class="form-group">
                     <label class="form-label" for="name">ФИО</label>
-                    <input class="form-input" v-model="fullName" id="name" name="name" type="text" value="{{ user.username }}"/>
+                    <input class="form-input" v-model="fullName" id="name" name="name" type="text" data-validate="require"/>
                   </div>
                   <div class="form-group">
                     <label class="form-label" for="phone">Телефон</label>
-                    <input class="form-input" v-model="phone" id="phone" name="phone" type="text" value="+70000000000"/>
+                    <input class="form-input" v-model="phone" id="phone" name="phone" type="text" data-validate="require"/>
                   </div>
                   <div class="form-group">
                     <label class="form-label" for="mail">E-mail</label>
-                    <input class="form-input" v-model="email" id="mail" name="mail" type="text" value="" data-validate="require"/>
+                    <input class="form-input" v-model="email" id="mail" name="mail" type="text" data-validate="require"/>
                   </div>
                 </div>
               </div>
@@ -76,24 +76,22 @@
               <div class="form-group">
                 <div>
                   <label class="toggle">
-                    <input type="radio" v-model="deliveryType" name="delivery" value="ordinary" checked="checked"/><span class="toggle-box"></span><span class="toggle-text">Обычная доставка</span>
+                    <input type="radio" v-model="deliveryType" name="delivery" value="Обычная доставка"/><span class="toggle-box"></span><span class="toggle-text">Обычная доставка</span>
                   </label>
                 </div>
                 <div>
                   <label class="toggle">
-                    <input type="radio" v-model="deliveryType" name="delivery" value="express"/><span class="toggle-box"></span><span class="toggle-text">Экспресс доставка</span>
+                    <input type="radio" v-model="deliveryType" name="delivery" value="Экспресс доставка"/><span class="toggle-box"></span><span class="toggle-text">Экспресс доставка</span>
                   </label>
                 </div>
               </div>
               <div class="form-group">
-                <label class="form-label" for="city">Город
-                </label>
-                <input class="form-input" v-model="city" id="city" name="city" type="text"/>
+                <label class="form-label" for="city">Город</label>
+                <input class="form-input" v-model="city" id="city" name="city" type="text" data-validate="require"/>
               </div>
               <div class="form-group">
-                <label class="form-label" for="address">Адрес
-                </label>
-                <textarea class="form-textarea" v-model="address" name="address" id="address"></textarea>
+                <label class="form-label" for="address">Адрес</label>
+                <textarea class="form-textarea" v-model="address" name="address" id="address" data-validate="require"></textarea>
               </div>
               <div class="Order-footer"><a class="btn btn_success Order-next" href="#step3">Дальше</a>
               </div>
@@ -106,12 +104,12 @@
               <div class="form-group">
                 <div>
                   <label class="toggle">
-                    <input type="radio" v-model="paymentType" name="pay" value="online" checked="checked"/><span class="toggle-box"></span><span class="toggle-text">Онлайн картой</span>
+                    <input type="radio" v-model="paymentType" name="pay" value="Онлайн картой"/><span class="toggle-box"></span><span class="toggle-text">Онлайн картой</span>
                   </label>
                 </div>
                 <div>
                   <label class="toggle">
-                    <input type="radio" v-model="paymentType" name="pay" value="someone"/><span class="toggle-box"></span><span class="toggle-text">Онлайн со случайного чужого счета</span>
+                    <input type="radio" v-model="paymentType" name="pay" value="Онлайн со случайного чужого счета"/><span class="toggle-box"></span><span class="toggle-text">Онлайн со случайного чужого счета</span>
                   </label>
                 </div>
               </div>
@@ -131,8 +129,7 @@
                       <div class="Order-info">
                         <div class="Order-infoType">ФИО:
                         </div>
-                        <div class="Order-infoContent">${ fullName }$
-                        </div>
+                        <div class="Order-infoContent">${ fullName }$</div>
                       </div>
                       <div class="Order-info">
                         <div class="Order-infoType">Телефон:
@@ -149,10 +146,8 @@
                     </div>
                     <div class="row-block">
                       <div class="Order-info Order-info_delivery">
-                        <div class="Order-infoType">Тип доставки:
-                        </div>
-                        <div class="Order-infoContent">${ deliveryType }$
-                        </div>
+                        <div class="Order-infoType">Тип доставки:</div>
+                        <div class="Order-infoContent">${ deliveryType }$</div>
                       </div>
                       <div class="Order-info">
                         <div class="Order-infoType">Город:

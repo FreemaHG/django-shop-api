@@ -1,6 +1,8 @@
 from django.contrib import admin, messages
+from django.db.models import QuerySet
 from mptt.admin import DraggableMPTTAdmin
 
+from src.api_shop.models.order import Order, PurchasedProduct
 from src.api_shop.models.product import Product
 from src.api_shop.models.category import Category
 from src.api_shop.models.image import ImageForCategory, ImageForProduct
@@ -320,4 +322,99 @@ class BasketAdmin(admin.ModelAdmin):
     """
 
     list_display = ("id", "user", "product", "count", "price")
-    # list_display_links = ("product_title",)
+
+
+class ProductsInOrder(admin.TabularInline):
+    """
+    Вывод товаров в текущем заказе
+    """
+
+    model = PurchasedProduct
+    can_delete = False
+    extra = 0
+
+    def get_readonly_fields(self, request, obj=None):
+        """
+        Запрещаем редактировать поля заказа
+        """
+        if obj:
+            return ["order", "product", "count", "price"]
+
+        return self.readonly_fields
+
+    def has_add_permission(self, request, obj=None):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+@admin.register(Order)
+class OrderAdmin(admin.ModelAdmin):
+    """
+    Админ-панель для вывода заказов
+    """
+
+    list_display = ("id", "full_name", "delivery", "payment", "city", "data", "status")
+    list_display_links = ("id",)
+    search_fields = ("id", "user__profile__full_name", "city", "address")
+    list_filter = ("delivery", "payment", "status")
+    inlines = (ProductsInOrder,)
+
+    def data(self, obj):
+        """
+        Изменяем формат вывода даты и времени
+        """
+        return obj.data_created.strftime(f"%d.%m.%Y %H:%M:%S")
+
+    data.short_description = "дата оформления"
+
+    def full_name(self, obj):
+        """
+        Полное имя покупателя
+        """
+        return obj.user.profile.full_name
+
+    full_name.short_description = "Покупатель"
+
+    def get_queryset(self, request) -> QuerySet:
+        return Order.objects.select_related("user__profile")
+
+    fieldsets = (
+        (
+            "Данные о заказе",
+            {
+                "fields": ("payment", "status"),
+                "description": "Номер заказа, тип оплаты и статус заказа",
+            },
+        ),
+        (
+            "Данные о покупателе и доставке",
+            {
+                "fields": ("full_name", "city", "address", "delivery"),
+                "description": "ФИО покупателя, город, адрес и тип доставки",
+            },
+        ),
+    )
+
+    def get_readonly_fields(self, request, obj=None):
+        """
+        Запрещаем редактировать поля заказа
+        """
+        if obj:
+            return [
+                "id",
+                "full_name",
+                "data_created",
+                "city",
+                "address",
+                "delivery",
+                "payment",
+                "status",
+            ]
+            # Снимаем запрет на изменение статуса оплаты (для тестирования)
+            # return ['id', 'full_name', 'data_created', 'city', 'address', 'delivery', 'payment']
+
+        return self.readonly_fields
