@@ -118,6 +118,14 @@ class BasketService:
         else:
             logger.warning("Нет записей для слияния")
 
+    @classmethod
+    def clear(cls, user: User) -> None:
+        """
+        Очистка корзины (при оформлении заказа)
+        """
+        Basket.objects.filter(user=user).delete()
+        logger.info("Корзина очищена")
+
 
 class BasketSessionService:
     """
