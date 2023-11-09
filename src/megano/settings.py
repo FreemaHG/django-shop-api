@@ -18,6 +18,8 @@ from src.config import (
     DB_NAME,
     DB_USER,
     DB_PASS,
+    REDIS_HOST,
+    REDIS_PORT,
 )
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -147,6 +149,7 @@ LOGGING = {
 DATABASES = {
     'default': {
         'ENGINE': 'mysql.connector.django',
+        'HOST': DB_HOST,
         'NAME': DB_NAME,
         'USER': DB_USER,
         'PASSWORD': DB_PASS,
@@ -203,3 +206,9 @@ MEDIA_ROOT = BASE_DIR / 'frontend'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Celery settings
+# Т.к. мы используем Redis как в качестве брокера сообщений, так и в качестве серверной части базы данных,
+# оба URL-адреса указывают на один и тот же адрес.
+CELERY_BROKER_URL = f"redis://{REDIS_HOST}:{REDIS_PORT}"
+CELERY_RESULT_BACKEND = f"redis://{REDIS_HOST}:{REDIS_PORT}"

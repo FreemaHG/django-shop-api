@@ -8,3 +8,6 @@ Pillow==10.0.1
 drf-yasg==1.21.7
 colorlog==6.7.0
 django-cleanup==8.0.0
+redis==5.0.1
+celery==5.3.4
+flower==2.0.1

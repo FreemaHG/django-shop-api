@@ -65,3 +65,10 @@ basket_data = openapi.Parameter(
           "count": 5
         }
 )
+
+order_id = openapi.Parameter(
+    'id',
+    openapi.IN_PATH,
+    type=openapi.TYPE_STRING,
+    description="order id"
+)
