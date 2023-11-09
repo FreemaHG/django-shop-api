@@ -9,7 +9,7 @@
           <h1 class="Middle-title">Оплата
           </h1>
           <ul class="breadcrumbs Middle-breadcrumbs">
-            <li class="breadcrumbs-item"><a href="/diploma-frontend/frontend/static">Home</a>
+            <li class="breadcrumbs-item"><a href="/">Home</a>
             </li>
             <li class="breadcrumbs-item breadcrumbs-item_current"><span>Оплата</span>
             </li>
@@ -21,16 +21,17 @@
       <div class="wrap">
         <form class="form Payment" @submit.prevent="submitPayment">
           <div class="Payment-card">
-            <div class="form-group">
-              <label for="numero1" class="form-label">Номер карты
+
+              <div class="form-group">
+              <label for="number" class="form-label">Номер карты
                 <input class="form-input Payment-bill"
-                       id="numero1"
-                       name="numero1"
+                       id="number"
+                       name="number"
                        type="text"
+{#                       data-mask="9999 9999 9999 9999"#}
+                       data-validate="require pay"
                        placeholder="9999 9999 9999 9999"
-                       data-mask="9999 9999 9999 9999"
-                       v-model="number"
-                       data-validate="require pay"/>
+                       v-model="number"/>
               </label>
             </div>
             <div class="form-group ">

@@ -104,4 +104,5 @@ class OrderDetailView(mixins.ListModelMixin, mixins.CreateModelMixin, generics.G
         OrderService.update(data)
         logger.info("Заказ подтвержден")
 
-        return Response(None, status=status.HTTP_200_OK)
+        return JsonResponse({"orderId": data["orderId"]})
+
