@@ -25,6 +25,10 @@ from src.config import (
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
+# INTERNAL_IPS = [
+#     '127.0.0.1'  # Для локальной машины
+# ]
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -54,6 +58,7 @@ INSTALLED_APPS = [
     "src.api_shop.apps.AppShopConfig",
     'drf_yasg',  # Документация Swagger
     "django_cleanup.apps.CleanupConfig",  # Очистка файлов при удалении записи
+    # 'debug_toolbar',  # Оптимизация запросов к БД
 ]
 
 MIDDLEWARE = [
@@ -64,28 +69,16 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # 'debug_toolbar.middleware.DebugToolbarMiddleware',  # Оптимизация запросов к БД
 ]
 
 ROOT_URLCONF = 'src.megano.urls'
 
 REST_FRAMEWORK = {
-    # Пагинация
-    # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    # 'DEFAULT_PAGINATION_CLASS': 'src.megano.utils.pagination.CustomPagination',
-    # 'PAGE_SIZE': 1,
-
     # Аутентификация
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        # 'rest_framework.authentication.BasicAuthentication',
-        # TODO Попробовать с этим
         'rest_framework.authentication.SessionAuthentication',
-        # 'rest_framework.authentication.TokenAuthentication',
     ],
-
-    # Проверка прав (аутентификации)
-    # 'DEFAULT_PERMISSION_CLASSES': [
-    #     'rest_framework.permissions.IsAuthenticated',
-    # ]
 }
 
 TEMPLATES = [
@@ -105,7 +98,7 @@ TEMPLATES = [
     },
 ]
 
-CASHES = {
+CACHES = {
     "default": {
         # Кэширование в ОЗУ
         "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
@@ -145,7 +138,6 @@ LOGGING = {
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-# TODO Нужно ли указывать хост при запуске в Docker?
 DATABASES = {
     'default': {
         'ENGINE': 'mysql.connector.django',

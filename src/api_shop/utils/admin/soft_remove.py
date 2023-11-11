@@ -8,16 +8,11 @@ from src.api_shop.models.category import Category
 logger = logging.getLogger(__name__)
 
 
-# TODO Перенести в утилиты (общий файл)
 def soft_remove_child_records(categories: List[Category]) -> None:
     """
     Мягкое удаление дочерних категорий (смена статуса на неактивный)
-
-    @param categories: список с категориями товаров
-    @return: None
     """
     logger.debug("Мягкое удаление дочерних записей")
-
     deleted_objects = []
 
     for record in categories:

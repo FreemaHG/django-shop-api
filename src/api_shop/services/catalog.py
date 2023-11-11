@@ -2,7 +2,7 @@ import logging
 from typing import Dict, List
 
 from django.core.exceptions import ObjectDoesNotExist
-from django.db.models import Q, QuerySet, Count, Avg
+from django.db.models import QuerySet, Count, Avg
 
 from src.api_shop.models import Product, Category
 
@@ -18,15 +18,14 @@ class CatalogService:
     @classmethod
     def get_products(cls, query_params: Dict, tags: List = None):
         logger.debug(f"Вывод товаров по параметрам: {query_params}")
-
         category_id = query_params.get("category", None)
 
         if category_id:
-            logger.debug(f"Фильтрация товаров категории: {category_id}")
             products = cls.by_category(category_id=int(category_id))
+
         else:
             logger.debug(f"Вывод всех товаров")
-            products = Product.objects.all()
+            products = Product.objects.select_related("category").prefetch_related("tags", "images").all()
 
         name = query_params.get("filter[name]", None)
 
@@ -51,7 +50,6 @@ class CatalogService:
             products = cls.by_sort(products=products, sort=sort)
 
             if sort_type == "dec":
-                logger.debug("Обратный порядок товаров")
                 products = products.reverse()
 
         if tags:
@@ -62,7 +60,6 @@ class CatalogService:
         if free_delivery == "true":
             products = cls.be_free_delivery(products=products)
 
-        logger.info(f"Возвращаемые товары: {products}")
         return products[:100]
 
 
@@ -82,9 +79,11 @@ class CatalogService:
 
         # Дочерние категории
         sub_categories = category.get_descendants(include_self=True)
-        products = Product.objects.select_related("category").filter(category__in=sub_categories, deleted=False)
+        products = Product.objects\
+            .select_related("category")\
+            .prefetch_related("tags", "images")\
+            .filter(category__in=sub_categories, deleted=False)
 
-        logger.info(f"Возврат {products.count()} товаров")
         return products
 
     @classmethod
@@ -98,10 +97,8 @@ class CatalogService:
             logger.debug("Поиск по всем товарам")
             products = Product.objects.all()[:100]
 
-        logger.debug("Поиск по переданным товарам")
         res = products.filter(title__iregex=fr'.*({name}).*')
 
-        logger.warning(f"Возврат {res.count()} товаров: {products}")
         return res
 
     @classmethod
@@ -112,7 +109,6 @@ class CatalogService:
         logger.debug(f"Фильтрация товаров по цене: min - {min_price}, max - {max_price}")
         res = products.filter(price__lte=max_price, price__gte=min_price)
 
-        logger.info(f"Возврат {res.count()} товаров")
         return res
 
     @classmethod
@@ -121,13 +117,8 @@ class CatalogService:
         Фильтрация товаров по бесплатной доставке
         """
         logger.debug(f"Фильтрация товаров по бесплатной доставке")
-
-        # FIXME Сделать сравнение со значением из настроек
         res = products.filter(price__gt=2000)
 
-        # res = list(filter(lambda prod: prod.free_delivery is True, products))
-
-        logger.info(f"Возврат {res.count()} товаров")
         return res
 
     @classmethod
@@ -138,7 +129,6 @@ class CatalogService:
         logger.debug(f"Фильтрация товаров по наличию")
         res = products.filter(count__gt=0)
 
-        logger.info(f"Возврат {res.count()} товаров")
         return res
 
     @classmethod
@@ -149,7 +139,6 @@ class CatalogService:
         logger.debug(f"Фильтрация товаров по тегам")
         res = list(set(products.filter(tags__in=tags)))
 
-        logger.info(f"Возврат {len(res)} товаров")
         return res
 
 

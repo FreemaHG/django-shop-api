@@ -2,7 +2,6 @@ from django.db import models
 from mptt.models import MPTTModel, TreeForeignKey
 
 from src.config import STATUS_CHOICES
-from src.api_shop.models.image import ImageForCategory
 
 
 class Category(MPTTModel):
@@ -11,7 +10,6 @@ class Category(MPTTModel):
     """
 
     title = models.CharField(max_length=100, verbose_name="название")
-    # image = models.OneToOneField("ImageForCategory", on_delete=models.CASCADE, verbose_name="изображение")
     tags = models.ManyToManyField("Tag", related_name="categories", verbose_name="теги")
 
     # Вложенные категории

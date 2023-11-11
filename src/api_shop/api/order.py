@@ -1,13 +1,12 @@
-import json
 import logging
 
+from django.core.cache import cache
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import JsonResponse, Http404
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework.generics import RetrieveAPIView
-from rest_framework.mixins import CreateModelMixin
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
-from rest_framework import status, viewsets, mixins, generics
+from rest_framework import status, mixins, generics
 from rest_framework.response import Response
 
 from src.api_shop.models.order import Order
@@ -21,7 +20,8 @@ logger = logging.getLogger(__name__)
 
 class OrderView(APIView):
 
-    # FIXME Сделать проверку авторизации
+    permission_classes = [IsAuthenticated]  # Разрешено только авторизованным пользователям
+
     @swagger_auto_schema(
         tags=['order'],
         request_body=BasketSerializer(many=True),
@@ -37,6 +37,9 @@ class OrderView(APIView):
 
         if serializer.is_valid(raise_exception=True):
             order_id = OrderService.create(data=serializer.validated_data, user=request.user)
+
+            # Очистка кэша с заказами пользователя
+            cache.delete(f"orders_{request.user}")
 
             return JsonResponse({"orderId": order_id})
 
@@ -54,7 +57,12 @@ class OrderView(APIView):
         """
         Вывод списка заказов
         """
-        queryset = Order.objects.filter(user=request.user)
+        user = request.user
+
+        queryset = cache.get_or_set(
+            f"orders_{user.id}",
+            Order.objects.filter(user=user),
+        )
         serializer = OrderSerializer(queryset, many=True)
 
         return JsonResponse(serializer.data, safe=False)
@@ -85,6 +93,7 @@ class OrderDetailView(mixins.ListModelMixin, mixins.CreateModelMixin, generics.G
         Вывод данных о заказе
         """
         serializer = OrderSerializer(self.get_queryset())
+
         return JsonResponse(serializer.data, safe=False)
 
     @swagger_auto_schema(
@@ -103,6 +112,9 @@ class OrderDetailView(mixins.ListModelMixin, mixins.CreateModelMixin, generics.G
         data = request.data
         OrderService.update(data)
         logger.info("Заказ подтвержден")
+
+        # Очистка кэша с заказами пользователя
+        cache.delete(f"orders_{request.user}")
 
         return JsonResponse({"orderId": data["orderId"]})
 

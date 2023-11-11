@@ -1,3 +1,5 @@
+import debug_toolbar
+
 from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.static import static
@@ -27,8 +29,7 @@ urlpatterns = [
     path("api/", include("src.api_user.urls")),
     # Документация Swagger
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
-
-    # path('', include(router.urls)),
+    # path('__debug__', include(debug_toolbar.urls))  # Оптимизация запросов к БД
 ]
 
 if settings.DEBUG:

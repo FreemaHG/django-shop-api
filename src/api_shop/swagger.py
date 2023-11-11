@@ -41,14 +41,6 @@ sortType = openapi.Parameter(
     enum=["dec", "inc"]
 )
 
-# TODO ХЗ как прописать!
-# tags = openapi.Parameter(
-#     'tags',
-#     openapi.IN_QUERY,
-#     type=openapi.TYPE_ARRAY,
-#     items=page
-# )
-
 limit = openapi.Parameter(
     'limit',
     openapi.IN_QUERY,

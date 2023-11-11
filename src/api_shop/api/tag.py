@@ -31,12 +31,9 @@ class TagListView(viewsets.ViewSet):
         # Все теги, встречающиеся в данной категории товара
         try:
             tags = Category.objects.get(id=category_id).tags.filter(deleted=False)
-
         except ObjectDoesNotExist:
             logger.error("Теги не найдены")
-
             return HttpResponse("Теги не найдены")
 
         serializer = TagSerializer(tags, many=True)
-
         return JsonResponse(serializer.data, safe=False)

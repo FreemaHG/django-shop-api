@@ -1,9 +1,9 @@
 import logging
 
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework import viewsets, mixins, generics, status
+from rest_framework import mixins, generics, status
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.views import APIView
 
 from src.api_shop.serializers.payment import PaymentSerializer
 from src.api_shop.tasks import payment
@@ -14,8 +14,9 @@ logger = logging.getLogger(__name__)
 
 
 class PaymentView(mixins.CreateModelMixin, generics.GenericAPIView):
-    # FIXME Сделать проверку авторизации
+
     serializer_class = PaymentSerializer
+    permission_classes = [IsAuthenticated]
 
     @swagger_auto_schema(
         tags=['payment'],
@@ -25,7 +26,7 @@ class PaymentView(mixins.CreateModelMixin, generics.GenericAPIView):
             200: "successful operation"
         }
     )
-    def post(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs) -> Response:
         """
         Оплата заказа
         """
@@ -36,8 +37,7 @@ class PaymentView(mixins.CreateModelMixin, generics.GenericAPIView):
 
             if res:
                 return Response(status=status.HTTP_200_OK)
-
-            return Response({"message": "Ошибка при выполненнии оплаты"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"message": "Ошибка при выполнении оплаты"}, status=status.HTTP_400_BAD_REQUEST)
 
         else:
             logging.error(f"Невалидные данные: {serializer.errors}")

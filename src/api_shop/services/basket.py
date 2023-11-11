@@ -24,8 +24,13 @@ class BasketService:
         Получение записей о товарах в корзине пользователя
         """
         logger.debug("Вывод корзины авторизованного пользователя")
-        basket = Basket.objects.filter(user=request.user)
+        user = request.user
 
+        # Получаем товары из кэша / добавляем в кэш
+        basket = cache.get_or_set(
+            f"basket_{user.id}",
+            Basket.objects.filter(user=user),
+        )
         return basket
 
 
@@ -35,11 +40,12 @@ class BasketService:
         Добавление товара в корзину
         """
         data = request.data
+        user = request.user
         logger.debug("Добавление товара в корзину авторизованного пользователя")
 
         try:
             basket = Basket.objects.get(
-                user=request.user,
+                user=user,
                 product_id=data["id"]
             )
             basket.count += data["count"]
@@ -48,13 +54,14 @@ class BasketService:
 
         except ObjectDoesNotExist:
             Basket.objects.create(
-                user = request.user,
+                user = user,
                 product_id=data["id"],
                 count=data["count"]
             )
             logger.info("Новый товар добавлен в корзину")
 
         finally:
+            cache.delete(f"basket_{user.id}")  # Очистка кэша c данными о товарах в корзине пользователя
             return cls.get_basket(request)  # Возвращаем обновленную корзину с товарами
 
 
@@ -76,6 +83,7 @@ class BasketService:
             logger.warning("Кол-во товара в корзине <= 0. Удаление товара из корзины")
             basket.delete()
 
+        cache.delete(f"basket_{request.user.id}")  # Очистка кэша c данными о товарах в корзине пользователя
         return cls.get_basket(request)  # Возвращаем обновленную корзину с товарами
 
 
@@ -115,8 +123,11 @@ class BasketService:
             del request.session["basket"]  # Удаляем записи из сессии
             request.session.save()
 
+            cache.delete(f"basket_{request.user.id}")  # Очистка кэша c данными о товарах в корзине пользователя
+
         else:
             logger.warning("Нет записей для слияния")
+
 
     @classmethod
     def clear(cls, user: User) -> None:
@@ -124,6 +135,7 @@ class BasketService:
         Очистка корзины (при оформлении заказа)
         """
         Basket.objects.filter(user=user).delete()
+        cache.delete(f"basket_{user.id}")  # Очистка кэша c данными о товарах в корзине пользователя
         logger.info("Корзина очищена")
 
 
@@ -159,8 +171,7 @@ class BasketSessionService:
                         )
                     )
 
-                # FIXME Изменить время хранения сессии
-                cache.set(cart_cache_key, records_list, 60 * 60)
+                cache.set(cart_cache_key, records_list)
                 logger.info("Товары сохранены в кэш")
 
             else:

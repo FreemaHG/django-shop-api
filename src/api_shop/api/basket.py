@@ -1,18 +1,13 @@
-import json
 import logging
 
 from django.http import JsonResponse
-from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework import viewsets, mixins, generics
 from rest_framework.views import APIView
 
-from src.api_shop.models import Product
-from src.api_shop.models.basket import Basket
 from src.api_shop.serializers.basket import BasketSerializer
-from src.api_shop.serializers.product import ProductShortSerializer
 from src.api_shop.swagger import basket_data
 from src.api_shop.services.basket import BasketService, BasketSessionService
+
 
 logger = logging.getLogger(__name__)
 
@@ -27,13 +22,12 @@ class BasketView(APIView):
     )
     def get(self, request):
         """
-        Get items in basket
+        Получить товары в корзине пользователя
         """
-        # TODO Возможно вынести (не дублировать)
         if request.user.is_authenticated:
-            queryset = BasketService.get_basket(request)
+            queryset = BasketService.get_basket(request)  # Товары аутентифицированного пользователя из БД
         else:
-            queryset = BasketSessionService.get_basket(request)
+            queryset = BasketSessionService.get_basket(request)  # Товары гостя из сессии
 
         serializer = BasketSerializer(queryset, many=True)
 
@@ -48,13 +42,12 @@ class BasketView(APIView):
     )
     def post(self, request):
         """
-        Add item to basket
+        Добавить товар в корзину
         """
-        # TODO Возможно вынести (не дублировать)
         if request.user.is_authenticated:
-            queryset = BasketService.add(request)
+            queryset = BasketService.add(request)  # Добавить товар в корзину аутентифицированного пользователя (в БД)
         else:
-            queryset = BasketSessionService.add(request)
+            queryset = BasketSessionService.add(request)  # Записать данные в сессию
 
         serializer = BasketSerializer(queryset, many=True)
 
@@ -69,13 +62,12 @@ class BasketView(APIView):
     )
     def delete(self, request):
         """
-        Remove item from basket
+        Удалить товар из корзины
         """
-        # TODO Возможно вынести (не дублировать)
         if request.user.is_authenticated:
-            queryset = BasketService.delete(request)
+            queryset = BasketService.delete(request)  # Удалить товар из БД
         else:
-            queryset = BasketSessionService.delete(request)
+            queryset = BasketSessionService.delete(request)  # Удалить из сессии
 
         serializer = BasketSerializer(queryset, many=True)
 

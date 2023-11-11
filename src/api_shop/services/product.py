@@ -1,8 +1,7 @@
 import logging
 
-from typing import Dict, List, Union
 from django.core.exceptions import ObjectDoesNotExist
-from django.db.models import QuerySet
+from django.http import Http404
 
 from src.api_shop.models.product import Product
 
@@ -19,11 +18,12 @@ class ProductService:
     def get_product(product_id: int) -> Product | None:
         """
         Возврат товара по id
-        :param product_id: id товара для поиска
-        :return:
         """
         logger.debug(f"Поиск товара по id: {product_id}")
 
-        # TODO Обработка исключения, если товар не найден
-        product = Product.objects.get(id=product_id)
-        return product
+        try:
+            return Product.objects.get(id=product_id)
+
+        except ObjectDoesNotExist:
+            logger.error("Товар не найден")
+            raise Http404

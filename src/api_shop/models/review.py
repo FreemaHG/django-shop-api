@@ -13,17 +13,14 @@ class Review(models.Model):
     product = models.ForeignKey(
         "Product", on_delete=models.CASCADE, verbose_name="товар", related_name="reviews"
     )
-
     author = models.CharField(max_length=150, blank=True, null=True, verbose_name="автор")
     email = models.EmailField(blank=True, null=True, verbose_name="email")
     text = models.TextField(max_length=2000, verbose_name="отзыв")
     rate = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)], verbose_name="оценка")
     date = models.DateTimeField(auto_now_add=True)
-
-    # Мягкое удаление
     deleted = models.BooleanField(
         choices=STATUS_CHOICES, default=False, verbose_name="Статус"
-    )
+    )  # Мягкое удаление
 
     class Meta:
         db_table = "reviews"

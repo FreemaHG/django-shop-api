@@ -14,7 +14,6 @@ from src.api_shop.models.basket import Basket
 from src.api_shop.utils.admin.soft_remove import soft_remove_child_records
 
 
-# FIXME Раскидать по разным файлам!!!
 @admin.action(description="Мягкое удаление всех записей (включая дочерние)")
 def deleted_all_records(adminmodel, request, queryset):
     """
@@ -91,7 +90,6 @@ class CategoryAdmin(DraggableMPTTAdmin):
 
     fieldsets = (
         ("Основное", {"fields": ("title", "parent")}),
-        # ("Файлы", {"fields": ("image",)}),
         ("Статусы", {"fields": ("deleted",)}),
     )
 
@@ -128,7 +126,6 @@ class ReviewsAdmin(admin.ModelAdmin):
     """
 
     list_display = ("product", "author", "short_review", "date", "deleted")
-    # list_display_links = ("product_title",)
     list_filter = ("deleted",)
     search_fields = ("product", "short_review")
     list_editable = ("deleted",)
@@ -225,7 +222,6 @@ class ProductAdmin(admin.ModelAdmin):
     search_fields = ("title",)
     list_editable = ("deleted",)
 
-    # FIXME Добавлять при помощи миксина
     # Мягкое удаление/восстановление записей
     actions = (
         deleted_records,
@@ -292,7 +288,6 @@ class SaleAdmin(admin.ModelAdmin):
     search_fields = ("product_name",)
     list_editable = ("deleted",)
 
-    # FIXME Добавлять при помощи миксина
     # Мягкое удаление/восстановление записей
     actions = (
         deleted_records,

@@ -1,7 +1,5 @@
 from django.db import models
 
-# from src.api_shop.models.product import Product
-
 
 class Specification(models.Model):
     """
@@ -9,7 +7,6 @@ class Specification(models.Model):
     """
     name = models.CharField(max_length=100, verbose_name="характеристика")
     value = models.CharField(max_length=100, verbose_name="значение")
-
     product = models.ForeignKey(
         "Product", on_delete=models.CASCADE, verbose_name="товар", related_name="specifications"
     )

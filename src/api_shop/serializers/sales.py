@@ -21,14 +21,12 @@ class SaleItemSerializer(serializers.ModelSerializer):
     title = serializers.CharField(source="product.title")
     images = serializers.SerializerMethodField('get_images')
 
-    # FIXME Не дублировать код!
     def date_from_format(self, obj):
         """
         Изменяем формат времени
         """
         return obj.date_from.strftime("%Y-%m-%d")
 
-    # FIXME Не дублировать код!
     def date_to_format(self, obj):
         """
         Изменяем формат времени

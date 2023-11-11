@@ -1,5 +1,4 @@
 from django.urls import path, include
-from rest_framework import routers
 
 from src.api_user.api.auth import register_user, user_login, user_logout
 from src.api_user.api.profile import update_avatar, update_password, ProfileView

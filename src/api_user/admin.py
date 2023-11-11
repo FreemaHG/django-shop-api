@@ -1,4 +1,4 @@
-from django.contrib import admin, messages
+from django.contrib import admin
 
 from src.api_user.models import Profile, ImageForAvatar
 

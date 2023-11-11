@@ -1,4 +1,3 @@
-from django.db import models
 from django.contrib.auth.models import User
 
 from src.megano.utils.save_img import save_avatar
@@ -24,7 +23,6 @@ class Profile(models.Model):
         return self.full_name
 
 
-# FIXME Не дублировать модели с картинками 3 раза!!!
 class ImageForAvatar(models.Model):
     """
     Модель для хранения данных об аватарах пользователей

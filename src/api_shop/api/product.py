@@ -3,6 +3,7 @@ import logging
 from django.http import JsonResponse
 from rest_framework.generics import RetrieveAPIView, GenericAPIView
 from rest_framework.mixins import CreateModelMixin
+from rest_framework.permissions import IsAuthenticated
 
 from src.api_shop.models.product import Product
 from src.api_shop.models.review import Review
@@ -18,7 +19,7 @@ class ProductDetailView(RetrieveAPIView):
     """
     Вывод данных о товаре (по pk в url)
     """
-    queryset = Product.objects.filter(deleted=False)  # Активные товары
+    queryset = Product.objects.prefetch_related("reviews").filter(deleted=False)  # Активные товары
     serializer_class = ProductFullSerializer
 
 
@@ -28,7 +29,7 @@ class ReviewCreateView(CreateModelMixin, GenericAPIView):
     """
     queryset = Review.objects.all()
     serializer_class = ReviewInSerializer
-    # permission_classes = [IsAuthenticated]  # Разрешено только авторизованным пользователям
+    permission_classes = [IsAuthenticated]  # Разрешено только авторизованным пользователям
 
     def post(self, request, format=None, *args, **kwargs):
         self.product_id = kwargs["pk"]  # id товара
