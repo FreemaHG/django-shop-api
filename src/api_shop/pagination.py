@@ -24,11 +24,11 @@ class SalePagination(CustomPagination):
     """
     Пагинация для товаров на распродаже
     """
-    page_size = 4  # Кол-во записей на странице
+    page_size = 12  # Кол-во записей на странице
 
 
 class CatalogPagination(CustomPagination):
     """
     Пагинация для каталога
     """
-    page_size = 20  # Кол-во записей на странице
+    page_size = 8  # Кол-во записей на странице

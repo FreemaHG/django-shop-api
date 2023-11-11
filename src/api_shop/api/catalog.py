@@ -50,7 +50,7 @@ class LimitedProductsView(viewsets.ViewSet):
         """
         logger.debug("Вывод лимитированных товаров")
 
-        queryset = Product.objects.filter(count__lte=50)[:10]
+        queryset = Product.objects.filter(count__lte=50)[:4]
         serializer = ProductShortSerializer(queryset, many=True)
 
         return JsonResponse(serializer.data, safe=False)
@@ -98,7 +98,7 @@ class PopularProductsView(viewsets.ViewSet):
         logger.debug("Вывод популярных товаров")
 
         # FIXME Задать условие для вывода товаров (сортировка по средней оценке отзывов и кол-ву продаж)
-        queryset = Product.objects.all()
+        queryset = Product.objects.all()[:8]
         serializer = ProductShortSerializer(queryset, many=True)
 
         return JsonResponse(serializer.data, safe=False)

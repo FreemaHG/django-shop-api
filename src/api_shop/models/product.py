@@ -70,7 +70,7 @@ class Product(models.Model):
         verbose_name_plural = "товары"
         ordering = ["id"]
 
-    def save(self, *args, **kwargs):
+    def add_tags(self, *args, **kwargs):
         """
         Добавляем запись об используемых тегах в категорию товара
         (для быстрого вывода всех тегов товаров определенной категории)
@@ -82,6 +82,14 @@ class Product(models.Model):
                 self.category.tags.add(tag)
 
         super(Product, self).save(*args, **kwargs)
+
+    def save(self, *args, **kwargs):
+        try:
+            self.add_tags()
+
+        except ValueError:
+            super(Product, self).save(*args, **kwargs)
+            self.add_tags()
 
     def __str__(self) -> str:
         return str(self.title)
