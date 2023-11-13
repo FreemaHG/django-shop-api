@@ -25,27 +25,28 @@ class CategoriesListView(ListModelMixin, GenericAPIView):
     """
     Вывод категорий
     """
-    queryset = Category.objects.filter(deleted=False, parent=None)  # Активные родительские категории
+
+    queryset = Category.objects.filter(
+        deleted=False, parent=None
+    )  # Активные родительские категории
     serializer_class = CategorySerializer
 
-    @swagger_auto_schema(tags=['catalog'])
+    @swagger_auto_schema(tags=["catalog"])
     def get(self, request):
         return self.list(request)
 
 
 class LimitedProductsView(viewsets.ViewSet):
-
     @swagger_auto_schema(
-        tags=['catalog'],
-        responses={
-            200: ProductShortSerializer(many=True)
-        }
+        tags=["catalog"], responses={200: ProductShortSerializer(many=True)}
     )
     def list(self, request):
         """
         Вывод товаров ограниченной серии
         """
         logger.debug("Вывод лимитированных товаров")
+
+        # TODO Обработать ошибку, когда нет товаров!!!
         queryset = list(Product.objects.filter(count__lte=50))
         random_queryset = random.sample(queryset, 4)  # 4 случайные записи
         serializer = ProductShortSerializer(random_queryset, many=True)
@@ -54,33 +55,29 @@ class LimitedProductsView(viewsets.ViewSet):
 
 
 class BannersProductsView(viewsets.ViewSet):
-
     @swagger_auto_schema(
-        tags=['catalog'],
-        responses={
-            200: ProductShortSerializer(many=True)
-        }
+        tags=["catalog"], responses={200: ProductShortSerializer(many=True)}
     )
     def list(self, request):
         """
         Вывод товаров для банера (акции)
         """
         logger.debug("Вывод товаров для баннера")
-        sales_id = list(SaleItem.objects.values_list('id', flat=True))  # Все id записей с акциями
+        sales_id = list(
+            SaleItem.objects.values_list("id", flat=True)
+        )  # Все id записей с акциями
         rand_ids = random.sample(sales_id, 3)  # 3 случайные записи
-        queryset = Product.objects.filter(saleitem__id__in=rand_ids)  # Получаем товары по акции
+        queryset = Product.objects.filter(
+            saleitem__id__in=rand_ids
+        )  # Получаем товары по акции
         serializer = ProductShortSerializer(queryset, many=True)
 
         return JsonResponse(serializer.data, safe=False)
 
 
 class PopularProductsView(viewsets.ViewSet):
-
     @swagger_auto_schema(
-        tags=['catalog'],
-        responses={
-            200: ProductShortSerializer(many=True)
-        }
+        tags=["catalog"], responses={200: ProductShortSerializer(many=True)}
     )
     def list(self, request):
         """
@@ -94,16 +91,10 @@ class PopularProductsView(viewsets.ViewSet):
 
 
 class SalesView(ListModelMixin, viewsets.GenericViewSet):
-
     serializer_class = SaleItemSerializer  # Схема для сериализации данных
     pagination_class = SalePagination  # Кастомная пагинация
 
-    @swagger_auto_schema(
-        tags=['catalog'],
-        responses={
-            200: SalesSerializer()
-        }
-    )
+    @swagger_auto_schema(tags=["catalog"], responses={200: SalesSerializer()})
     def list(self, request):
         """
         Вывод товаров на распродаже
@@ -112,7 +103,9 @@ class SalesView(ListModelMixin, viewsets.GenericViewSet):
 
         # FIXME Проверить оптимизацию запроса
         # WARNING Ограничение в 40 записей, чтобы пагинация не ломала верстку (корявый фронт)
-        queryset = SaleItem.objects.select_related("product").filter(deleted=False)[:40]  # Только активные акции
+        queryset = SaleItem.objects.select_related("product").filter(deleted=False)[
+            :40
+        ]  # Только активные акции
 
         # Пагинация
         # FIXME Вынести, не дублировать
@@ -131,15 +124,14 @@ class CatalogView(ListModelMixin, viewsets.GenericViewSet):
     """
     Вывод товаров по переданным параметрам
     """
+
     serializer_class = ProductShortSerializer  # Схема для сериализации данных
     pagination_class = CatalogPagination  # Кастомная пагинация
 
     @swagger_auto_schema(
-        tags=['catalog'],
+        tags=["catalog"],
         manual_parameters=[filter_param, category, sort, sortType, limit],
-        responses={
-            200: CatalogSerializer()
-        }
+        responses={200: CatalogSerializer()},
     )
     def list(self, request):
         """
@@ -148,7 +140,7 @@ class CatalogView(ListModelMixin, viewsets.GenericViewSet):
         logger.debug("Вывод каталога с товарами")
 
         query_params = request.query_params.dict()
-        tags = request.GET.getlist('tags[]')
+        tags = request.GET.getlist("tags[]")
 
         # Получаем отфильтрованные товары
         queryset = CatalogService.get_products(query_params=query_params, tags=tags)

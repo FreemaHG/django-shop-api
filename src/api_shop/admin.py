@@ -44,7 +44,8 @@ class TagAdmin(admin.ModelAdmin):
     """
     Админ-панель для товарных тегов
     """
-    list_display = ['id', 'name', 'deleted']
+
+    list_display = ["id", "name", "deleted"]
     list_display_links = ("name",)
     list_editable = ("deleted",)
 
@@ -105,9 +106,7 @@ class CategoryAdmin(DraggableMPTTAdmin):
                 super(CategoryAdmin, self).save_model(request, obj, form, change)
             else:
                 # Меняем уровень сообщения на ERROR
-                messages.set_level(
-                    request, messages.ERROR
-                )
+                messages.set_level(request, messages.ERROR)
                 # Чтобы избежать вывода одновременно 2 сообщений: успешного и в случае ошибки
                 messages.add_message(
                     request,
@@ -162,7 +161,8 @@ class SpecificationAdmin(admin.ModelAdmin):
     """
     Админ-панель для характеристик товара
     """
-    list_display = ['id', 'name', 'value']
+
+    list_display = ["id", "name", "value"]
     list_display_links = ("name",)
 
 
@@ -275,6 +275,7 @@ class SaleAdmin(admin.ModelAdmin):
     """
     Админ-панель для записей о распродажах товаров
     """
+
     list_display = (
         "id",
         "product_name",
@@ -309,6 +310,7 @@ class SaleAdmin(admin.ModelAdmin):
         return obj.discount
 
     discount.short_description = " Скидка"
+
 
 @admin.register(Basket)
 class BasketAdmin(admin.ModelAdmin):
@@ -345,6 +347,7 @@ class ProductsInOrder(admin.TabularInline):
 
     def has_delete_permission(self, request, obj=None):
         return False
+
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):

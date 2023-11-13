@@ -14,11 +14,13 @@ class SaleItem(models.Model):
     """
     Модель для хранения данных о скидках на товары
     """
-    product = models.OneToOneField(Product, on_delete=models.CASCADE, verbose_name="товар")
+
+    product = models.OneToOneField(
+        Product, on_delete=models.CASCADE, verbose_name="товар"
+    )
     sale_price = models.FloatField(verbose_name="цена со скидкой")
     date_from = models.DateTimeField(verbose_name="дата начала распродажи")
     date_to = models.DateTimeField(verbose_name="дата окончания распродажи")
-
 
     deleted = models.BooleanField(
         choices=STATUS_CHOICES, default=False, verbose_name="Статус"

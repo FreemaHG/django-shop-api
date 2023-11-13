@@ -6,24 +6,46 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('api_shop', '0005_category_tags'),
+        ("api_shop", "0005_category_tags"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Basket',
+            name="Basket",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('product', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='api_shop.product', verbose_name='Товар')),
-                ('user', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL, verbose_name='Покупатель')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "product",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="api_shop.product",
+                        verbose_name="Товар",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                        verbose_name="Покупатель",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Корзина покупателя',
-                'verbose_name_plural': 'Корзины покупателей',
-                'db_table': 'basket',
+                "verbose_name": "Корзина покупателя",
+                "verbose_name_plural": "Корзины покупателей",
+                "db_table": "basket",
             },
         ),
     ]

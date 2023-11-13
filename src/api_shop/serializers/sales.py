@@ -13,13 +13,14 @@ class SaleItemSerializer(serializers.ModelSerializer):
     """
     Схема для записей о распродажах товаров
     """
+
     id = serializers.CharField(source="product.id")
     price = serializers.IntegerField(source="product.price")
     salePrice = serializers.FloatField(source="sale_price")
     dateFrom = serializers.SerializerMethodField("date_from_format")
     dateTo = serializers.SerializerMethodField("date_to_format")
     title = serializers.CharField(source="product.title")
-    images = serializers.SerializerMethodField('get_images')
+    images = serializers.SerializerMethodField("get_images")
 
     def date_from_format(self, obj):
         """
@@ -45,13 +46,13 @@ class SaleItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = SaleItem
         fields = [
-            'id',
-            'price',
-            'salePrice',
-            'dateFrom',
-            'dateTo',
-            'title',
-            'images',
+            "id",
+            "price",
+            "salePrice",
+            "dateFrom",
+            "dateTo",
+            "title",
+            "images",
         ]
 
 
@@ -59,4 +60,5 @@ class SalesSerializer(PaginationSerializerMixin):
     """
     Схема для вывода списка предложений с товарами на распродаже
     """
+
     items = SaleItemSerializer(many=True)

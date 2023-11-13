@@ -13,14 +13,14 @@ def validate_sale_price(obj):
 
     if sale_price >= price:
         raise ValidationError(
-            f'Цена товара со скидкой ({sale_price}) не может быть больше или равно цене товара без скидки ({price}).'
+            f"Цена товара со скидкой ({sale_price}) не может быть больше или равно цене товара без скидки ({price})."
         )
 
     discount = 100 - ((sale_price / price) * 100)
 
     if not 5 <= discount <= 90:
         raise ValidationError(
-            f'Скидка на товар должна быть в пределах 5-90%. Текущая скидка - {int(discount)}%'
+            f"Скидка на товар должна быть в пределах 5-90%. Текущая скидка - {int(discount)}%"
         )
 
 
@@ -34,7 +34,9 @@ def validate_date_to(obj):
     date_to = obj.date_to.replace(tzinfo=None)
 
     if date_to <= date_from:
-        raise ValidationError('Дата окончания распродажи не может быть раньше или равна даты начала распродажи')
+        raise ValidationError(
+            "Дата окончания распродажи не может быть раньше или равна даты начала распродажи"
+        )
 
     # elif date_to <= current_date:
     #     raise ValidationError('Дата окончания распродажи не может быть раньше или равна текущей дате')

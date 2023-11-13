@@ -18,15 +18,12 @@ logger = logging.getLogger(__name__)
 
 
 @swagger_auto_schema(
-    tags=['auth'],
-    method='post',
+    tags=["auth"],
+    method="post",
     request_body=UserRegisterSerializer,
-    responses={
-        201: "The user is registered",
-        400: "Invalid data"
-    }
+    responses={201: "The user is registered", 400: "Invalid data"},
 )
-@api_view(['POST'])
+@api_view(["POST"])
 @permission_classes([AllowAny])  # Разрешено любому пользователю
 def register_user(request):
     """
@@ -38,9 +35,13 @@ def register_user(request):
     serializer = UserRegisterSerializer(data=data)
 
     if serializer.is_valid():
-        user = serializer.save()  # Создаем и возвращаем нового пользователя в методе create() в схеме
+        user = (
+            serializer.save()
+        )  # Создаем и возвращаем нового пользователя в методе create() в схеме
         # Аутентификация
-        user = authenticate(username=user.username, password=serializer.validated_data["password"])
+        user = authenticate(
+            username=user.username, password=serializer.validated_data["password"]
+        )
         login(request, user)  # Авторизация нового пользователя
 
         BasketService.merger(request=request, user=user)  # Слияние корзин
@@ -52,15 +53,12 @@ def register_user(request):
 
 
 @swagger_auto_schema(
-    tags=['auth'],
-    method='post',
+    tags=["auth"],
+    method="post",
     request_body=UserLoginSerializer,
-    responses={
-        200: "The user is authenticated",
-        400: "Invalid data"
-    }
+    responses={200: "The user is authenticated", 400: "Invalid data"},
 )
-@api_view(['POST'])
+@api_view(["POST"])
 @permission_classes([AllowAny])  # Разрешено любому пользователю
 def user_login(request):
     """
@@ -72,7 +70,9 @@ def user_login(request):
     serializer = UserLoginSerializer(data=data)
 
     if serializer.is_valid(raise_exception=True):
-        user = authenticate(username=data['username'], password=data['password'])  # Аутентификация
+        user = authenticate(
+            username=data["username"], password=data["password"]
+        )  # Аутентификация
         login(request, user)  # Авторизация нового пользователя
         logging.info(f"Пользователь аутентифицирован")
 
@@ -86,15 +86,17 @@ def user_login(request):
 
 
 @swagger_auto_schema(
-    tags=['auth'],
-    method='post',
+    tags=["auth"],
+    method="post",
     responses={
         200: "The user logged out of the account",
-        403: "The user is not logged in"
-    }
+        403: "The user is not logged in",
+    },
 )
-@api_view(['POST'])
-@permission_classes([IsAuthenticated])  # Разрешено только аутентифицированным пользователям
+@api_view(["POST"])
+@permission_classes(
+    [IsAuthenticated]
+)  # Разрешено только аутентифицированным пользователям
 def user_logout(request):
     """
     Выход из учетной записи пользователя

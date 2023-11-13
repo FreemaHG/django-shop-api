@@ -5,10 +5,14 @@ class Specification(models.Model):
     """
     Модель для хранения данных о характеристиках товаров
     """
+
     name = models.CharField(max_length=100, verbose_name="характеристика")
     value = models.CharField(max_length=100, verbose_name="значение")
     product = models.ForeignKey(
-        "Product", on_delete=models.CASCADE, verbose_name="товар", related_name="specifications"
+        "Product",
+        on_delete=models.CASCADE,
+        verbose_name="товар",
+        related_name="specifications",
     )
 
     class Meta:

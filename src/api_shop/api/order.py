@@ -19,15 +19,14 @@ logger = logging.getLogger(__name__)
 
 
 class OrderView(APIView):
-
-    permission_classes = [IsAuthenticated]  # Разрешено только авторизованным пользователям
+    permission_classes = [
+        IsAuthenticated
+    ]  # Разрешено только авторизованным пользователям
 
     @swagger_auto_schema(
-        tags=['order'],
+        tags=["order"],
         request_body=BasketSerializer(many=True),
-        responses={
-            200: OrderIdSerializer()
-        }
+        responses={200: OrderIdSerializer()},
     )
     def post(self, request):
         """
@@ -36,7 +35,9 @@ class OrderView(APIView):
         serializer = BasketSerializer(data=request.data, many=True)
 
         if serializer.is_valid(raise_exception=True):
-            order_id = OrderService.create(data=serializer.validated_data, user=request.user)
+            order_id = OrderService.create(
+                data=serializer.validated_data, user=request.user
+            )
 
             # Очистка кэша с заказами пользователя
             cache.delete(f"orders_{request.user}")
@@ -47,12 +48,7 @@ class OrderView(APIView):
             logging.error(f"Невалидные данные: {serializer.errors}")
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    @swagger_auto_schema(
-        tags=['order'],
-        responses={
-            200: OrderSerializer(many=True)
-        }
-    )
+    @swagger_auto_schema(tags=["order"], responses={200: OrderSerializer(many=True)})
     def get(self, request):
         """
         Вывод списка заказов
@@ -68,10 +64,13 @@ class OrderView(APIView):
         return JsonResponse(serializer.data, safe=False)
 
 
-class OrderDetailView(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
+class OrderDetailView(
+    mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView
+):
     """
     Вывод данных и редактирование заказа
     """
+
     serializer_class = OrderSerializer
 
     def get_queryset(self):
@@ -79,15 +78,10 @@ class OrderDetailView(mixins.ListModelMixin, mixins.CreateModelMixin, generics.G
             data = Order.objects.get(id=self.kwargs["pk"])
             return data
 
-        except ObjectDoesNotExist:
+        except (ObjectDoesNotExist, KeyError):
             raise Http404
 
-    @swagger_auto_schema(
-        tags=['order'],
-        responses={
-            200: OrderSerializer()
-        }
-    )
+    @swagger_auto_schema(tags=["order"], responses={200: OrderSerializer()})
     def get(self, request, *args, **kwargs):
         """
         Вывод данных о заказе
@@ -97,11 +91,11 @@ class OrderDetailView(mixins.ListModelMixin, mixins.CreateModelMixin, generics.G
         return JsonResponse(serializer.data, safe=False)
 
     @swagger_auto_schema(
-        tags=['order'],
+        tags=["order"],
         request_body=OrderSerializer(),
         responses={
             200: "successful operation",
-        }
+        },
     )
     def post(self, request, *args, **kwargs):
         """
@@ -117,4 +111,3 @@ class OrderDetailView(mixins.ListModelMixin, mixins.CreateModelMixin, generics.G
         cache.delete(f"orders_{request.user}")
 
         return JsonResponse({"orderId": data["orderId"]})
-

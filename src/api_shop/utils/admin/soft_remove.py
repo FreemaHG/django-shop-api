@@ -17,9 +17,7 @@ def soft_remove_child_records(categories: List[Category]) -> None:
 
     for record in categories:
         # Получаем все дочерние записи
-        children = record.get_descendants(
-            include_self=False
-        )
+        children = record.get_descendants(include_self=False)
 
         for child in children:
             child.deleted = True

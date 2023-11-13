@@ -31,6 +31,7 @@ class Category(MPTTModel):
         """
         Сортировка по вложенности
         """
+
         order_insertion_by = ("title",)
 
     class Meta:

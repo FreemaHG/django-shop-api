@@ -18,12 +18,20 @@ class Product(models.Model):
     """
     Модель для хранения данных о товарах
     """
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="products", verbose_name="категория")
+
+    category = models.ForeignKey(
+        Category,
+        on_delete=models.CASCADE,
+        related_name="products",
+        verbose_name="категория",
+    )
     price = models.FloatField(validators=[MinValueValidator(0)], verbose_name="цена")
     count = models.PositiveIntegerField(default=0, verbose_name="кол-во")
     date = models.DateTimeField(auto_now_add=True, verbose_name="время добавления")
     title = models.CharField(max_length=250, verbose_name="название")
-    short_description = models.CharField(max_length=500, verbose_name="краткое описание")
+    short_description = models.CharField(
+        max_length=500, verbose_name="краткое описание"
+    )
     description = models.TextField(max_length=1000, verbose_name="описание")
     tags = models.ManyToManyField(Tag, related_name="products", verbose_name="теги")
     deleted = models.BooleanField(
@@ -52,7 +60,9 @@ class Product(models.Model):
         """
         res = cache.get_or_set(
             f"average_rating_{self.id}",
-            Review.objects.filter(product_id=self.id).aggregate(average_rate=Avg('rate')),
+            Review.objects.filter(product_id=self.id).aggregate(
+                average_rate=Avg("rate")
+            ),
         )
 
         try:

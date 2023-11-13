@@ -13,8 +13,9 @@ class ProfileSerializer(serializers.ModelSerializer):
     """
     Схема для профиля пользователя
     """
+
     fullName = serializers.CharField(source="full_name")
-    email = serializers.SerializerMethodField('get_email')
+    email = serializers.SerializerMethodField("get_email")
     phone = serializers.CharField()
     avatar = ImageSerializer(read_only=True)
 
@@ -30,5 +31,4 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Profile
-        fields = ['fullName', 'email', 'phone', 'avatar']
-        
+        fields = ["fullName", "email", "phone", "avatar"]

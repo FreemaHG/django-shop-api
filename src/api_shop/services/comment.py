@@ -62,5 +62,9 @@ class CommentsService:
 
         logger.info("Комментарий успешно создан")
 
-        cache.delete(f"average_rating_{product_id}")  # Очистка кэша с средней оценкой товара
-        cache.delete(f"comments_{product_id}")  # Очистка кэша с комментариями к текущему товару
+        cache.delete(
+            f"average_rating_{product_id}"
+        )  # Очистка кэша с средней оценкой товара
+        cache.delete(
+            f"comments_{product_id}"
+        )  # Очистка кэша с комментариями к текущему товару

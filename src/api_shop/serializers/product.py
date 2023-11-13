@@ -17,9 +17,10 @@ class SpecificationSerializer(serializers.ModelSerializer):
     """
     Схема для характеристик товара
     """
+
     class Meta:
         model = Specification
-        fields = ['name', 'value']
+        fields = ["name", "value"]
 
 
 class ProductShortSerializer(serializers.ModelSerializer):
@@ -27,7 +28,7 @@ class ProductShortSerializer(serializers.ModelSerializer):
     Схема для товара (короткая)
     """
 
-    date = serializers.SerializerMethodField('date_format')
+    date = serializers.SerializerMethodField("date_format")
     description = serializers.CharField(source="short_description")
     freeDelivery = serializers.BooleanField(source="free_delivery")
     images = ImageSerializer(many=True)
@@ -44,18 +45,18 @@ class ProductShortSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = [
-            'id',
-            'category',
-            'price',
-            'count',
-            'date',
-            'title',
-            'description',
-            'freeDelivery',
-            'images',
-            'tags',
-            'reviews',
-            'rating'
+            "id",
+            "category",
+            "price",
+            "count",
+            "date",
+            "title",
+            "description",
+            "freeDelivery",
+            "images",
+            "tags",
+            "reviews",
+            "rating",
         ]
 
 
@@ -63,17 +64,19 @@ class ProductFullSerializer(ProductShortSerializer):
     """
     Схема для товара (полная). Для страницы товара.
     """
+
     fullDescription = serializers.CharField(source="description")
     reviews = ReviewOutSerializer(many=True)  # Список с отзывами
     specifications = SpecificationSerializer(many=True)
 
     class Meta:
         model = Product
-        fields = '__all__'
+        fields = "__all__"
 
 
 class CatalogSerializer(PaginationSerializerMixin):
     """
     Схема для вывода каталога товаров
     """
+
     items = ProductShortSerializer(many=True)
