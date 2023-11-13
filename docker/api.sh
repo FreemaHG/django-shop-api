@@ -1,13 +1,7 @@
 #!/bin/bash
 
-# Создать миграции
-python3 -m src.manage makemigrations
-
-# Применить миграции
-python3 -m src.manage migrate
-
-# Создать суперпользователя
-python3 -m src.manage createsuperuser
+# Сбор статических файлов (для админки Django) для последующей обработки сервером nginx
+python3 -m src.manage collectstatic --noinput
 
 # Запуск сервера
-python3 -m src.manage runserver
+gunicorn src.megano.wsgi:application --workers 4 --bind=0.0.0.0:8000

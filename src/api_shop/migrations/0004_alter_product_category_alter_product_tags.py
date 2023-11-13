@@ -5,20 +5,26 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('api_shop', '0003_alter_saleitem_date_to_alter_saleitem_sale_price'),
+        ("api_shop", "0003_alter_saleitem_date_to_alter_saleitem_sale_price"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='product',
-            name='category',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='products', to='api_shop.category', verbose_name='категория'),
+            model_name="product",
+            name="category",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="products",
+                to="api_shop.category",
+                verbose_name="категория",
+            ),
         ),
         migrations.AlterField(
-            model_name='product',
-            name='tags',
-            field=models.ManyToManyField(related_name='products', to='api_shop.tag', verbose_name='теги'),
+            model_name="product",
+            name="tags",
+            field=models.ManyToManyField(
+                related_name="products", to="api_shop.tag", verbose_name="теги"
+            ),
         ),
     ]

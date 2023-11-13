@@ -8,21 +8,23 @@ class SubCategorySerializer(serializers.ModelSerializer):
     """
     Схема для вложенной категорий товаров
     """
-    # Вложенная схема с изображением
-    image = ImageSerializer()
+
+    image = ImageSerializer()  # Вложенная схема с изображением
 
     class Meta:
         model = Category
-        fields = ['id', 'title', 'image']
+        fields = ["id", "title", "image"]
 
 
 class CategorySerializer(SubCategorySerializer):
     """
     Схема для категорий товаров
     """
-    # Вложенная схема (подкатегория товаров)
-    subcategories = SubCategorySerializer(many=True)
+
+    subcategories = SubCategorySerializer(
+        many=True
+    )  # Вложенная схема (подкатегория товаров)
 
     class Meta:
         model = Category
-        fields = ['id', 'title', 'image', 'subcategories']
+        fields = ["id", "title", "image", "subcategories"]

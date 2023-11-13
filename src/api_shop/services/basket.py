@@ -24,10 +24,14 @@ class BasketService:
         Получение записей о товарах в корзине пользователя
         """
         logger.debug("Вывод корзины авторизованного пользователя")
-        basket = Basket.objects.filter(user=request.user)
+        user = request.user
 
+        # Получаем товары из кэша / добавляем в кэш
+        basket = cache.get_or_set(
+            f"basket_{user.id}",
+            Basket.objects.filter(user=user),
+        )
         return basket
-
 
     @classmethod
     def add(cls, request: HttpRequest) -> QuerySet:
@@ -35,28 +39,24 @@ class BasketService:
         Добавление товара в корзину
         """
         data = request.data
+        user = request.user
         logger.debug("Добавление товара в корзину авторизованного пользователя")
 
         try:
-            basket = Basket.objects.get(
-                user=request.user,
-                product_id=data["id"]
-            )
+            basket = Basket.objects.get(user=user, product_id=data["id"])
             basket.count += data["count"]
             basket.save()
             logger.info("Увеличение кол-ва товара в корзине")
 
         except ObjectDoesNotExist:
-            Basket.objects.create(
-                user = request.user,
-                product_id=data["id"],
-                count=data["count"]
-            )
+            Basket.objects.create(user=user, product_id=data["id"], count=data["count"])
             logger.info("Новый товар добавлен в корзину")
 
         finally:
+            cache.delete(
+                f"basket_{user.id}"
+            )  # Очистка кэша c данными о товарах в корзине пользователя
             return cls.get_basket(request)  # Возвращаем обновленную корзину с товарами
-
 
     @classmethod
     def delete(cls, request: HttpRequest) -> QuerySet:
@@ -76,8 +76,10 @@ class BasketService:
             logger.warning("Кол-во товара в корзине <= 0. Удаление товара из корзины")
             basket.delete()
 
+        cache.delete(
+            f"basket_{request.user.id}"
+        )  # Очистка кэша c данными о товарах в корзине пользователя
         return cls.get_basket(request)  # Возвращаем обновленную корзину с товарами
-
 
     @classmethod
     def merger(cls, request: HttpRequest, user: User) -> None:
@@ -102,9 +104,7 @@ class BasketService:
 
                 except ObjectDoesNotExist:
                     deferred_product = Basket.objects.create(
-                        user=user,
-                        product_id=prod_id,
-                        count=count
+                        user=user, product_id=prod_id, count=count
                     )
 
                     new_records.append(deferred_product)
@@ -115,6 +115,10 @@ class BasketService:
             del request.session["basket"]  # Удаляем записи из сессии
             request.session.save()
 
+            cache.delete(
+                f"basket_{request.user.id}"
+            )  # Очистка кэша c данными о товарах в корзине пользователя
+
         else:
             logger.warning("Нет записей для слияния")
 
@@ -124,6 +128,9 @@ class BasketService:
         Очистка корзины (при оформлении заказа)
         """
         Basket.objects.filter(user=user).delete()
+        cache.delete(
+            f"basket_{user.id}"
+        )  # Очистка кэша c данными о товарах в корзине пользователя
         logger.info("Корзина очищена")
 
 
@@ -159,8 +166,7 @@ class BasketSessionService:
                         )
                     )
 
-                # FIXME Изменить время хранения сессии
-                cache.set(cart_cache_key, records_list, 60 * 60)
+                cache.set(cart_cache_key, records_list)
                 logger.info("Товары сохранены в кэш")
 
             else:
@@ -208,7 +214,7 @@ class BasketSessionService:
         count_record = request.session["basket"].get(product_id, None)
 
         if not count_record:
-            logger.error(f'Не найден ключ в сессии')
+            logger.error(f"Не найден ключ в сессии")
         else:
             count_record -= count
 
@@ -228,7 +234,7 @@ class BasketSessionService:
         """
         Проверка ключа в объекте сессии (создание при необходимости) для записи, чтения и удаления товаров
         """
-        logger.debug('Проверка ключа в объекте сессии')
+        logger.debug("Проверка ключа в объекте сессии")
 
         if not request.session.get("basket", False):
             request.session["basket"] = {}

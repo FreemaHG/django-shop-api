@@ -19,24 +19,21 @@ class TagListView(viewsets.ViewSet):
     """
 
     @swagger_auto_schema(
-        tags=['tags'],
+        tags=["tags"],
         manual_parameters=[category],
-        responses={
-            200: TagSerializer(many=True)
-        }
+        responses={200: TagSerializer(many=True)},
     )
     def list(self, request):
-        category_id = request.query_params.get("category", None)  # Извлекаем id категории из URL
+        category_id = request.query_params.get(
+            "category", None
+        )  # Извлекаем id категории из URL
 
         # Все теги, встречающиеся в данной категории товара
         try:
             tags = Category.objects.get(id=category_id).tags.filter(deleted=False)
-
         except ObjectDoesNotExist:
             logger.error("Теги не найдены")
-
             return HttpResponse("Теги не найдены")
 
         serializer = TagSerializer(tags, many=True)
-
         return JsonResponse(serializer.data, safe=False)

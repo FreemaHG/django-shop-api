@@ -5,8 +5,9 @@ class PaginationSerializerMixin(serializers.Serializer):
     """
     Схема добавляет поля текущей и последней страницы при разбивке результатов товаров на страницы
     """
+
     currentPage = serializers.IntegerField()
     lastPage = serializers.IntegerField()
 
     class Meta:
-        fields = '__all__'
+        fields = "__all__"

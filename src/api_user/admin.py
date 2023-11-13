@@ -1,9 +1,8 @@
-from django.contrib import admin, messages
+from django.contrib import admin
 
 from src.api_user.models import Profile, ImageForAvatar
 
 
-# FIXME Убрать (не дублировать)
 @admin.action(description="Мягкое удаление")
 def deleted_records(adminmodel, request, queryset):
     """
@@ -34,7 +33,8 @@ class TagAdmin(admin.ModelAdmin):
     """
     Админ-панель для профайлов пользователей
     """
-    list_display = ['id', 'username', 'full_name', 'email', 'phone', 'deleted']
+
+    list_display = ["id", "username", "full_name", "email", "phone", "deleted"]
     list_display_links = ("full_name",)
     list_editable = ("deleted",)
     inlines = (ChoiceAvatar,)

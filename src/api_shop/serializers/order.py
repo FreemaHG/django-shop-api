@@ -13,6 +13,7 @@ class OrderIdSerializer(serializers.Serializer):
     """
     Схема для вывода id заказа
     """
+
     orderId = serializers.IntegerField()
 
     class Meta:
@@ -23,6 +24,7 @@ class OrderSerializer(serializers.ModelSerializer):
     """
     Схема для оформления заказа
     """
+
     createdAt = serializers.SerializerMethodField("date_format")
     fullName = serializers.CharField(source="user.profile.full_name")
     email = serializers.CharField(source="user.email")
@@ -52,5 +54,5 @@ class OrderSerializer(serializers.ModelSerializer):
             "status",
             "city",
             "address",
-            "products"
+            "products",
         ]

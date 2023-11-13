@@ -20,10 +20,15 @@ from src.config import (
     DB_PASS,
     REDIS_HOST,
     REDIS_PORT,
+    DOMEN_HOSTS,
 )
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
+
+# INTERNAL_IPS = [
+#     '127.0.0.1'  # Для локальной машины
+# ]
 
 
 # Quick-start development settings - unsuitable for production
@@ -35,77 +40,65 @@ SECRET_KEY = _SECRET_KEY
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = DOMEN_HOSTS
 
 
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'frontend',
-    'rest_framework',
-    'rest_framework.authtoken',  # Проверка токенов для аутентификации пользователя
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    "frontend",
+    "rest_framework",
+    "rest_framework.authtoken",  # Проверка токенов для аутентификации пользователя
     "src.api_user.apps.AppUserConfig",
     "src.api_shop.apps.AppShopConfig",
-    'drf_yasg',  # Документация Swagger
+    "drf_yasg",  # Документация Swagger
     "django_cleanup.apps.CleanupConfig",  # Очистка файлов при удалении записи
+    # 'debug_toolbar',  # Оптимизация запросов к БД
 ]
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "django.middleware.security.SecurityMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    # 'debug_toolbar.middleware.DebugToolbarMiddleware',  # Оптимизация запросов к БД
 ]
 
-ROOT_URLCONF = 'src.megano.urls'
+ROOT_URLCONF = "src.megano.urls"
 
 REST_FRAMEWORK = {
-    # Пагинация
-    # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    # 'DEFAULT_PAGINATION_CLASS': 'src.megano.utils.pagination.CustomPagination',
-    # 'PAGE_SIZE': 1,
-
     # Аутентификация
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        # 'rest_framework.authentication.BasicAuthentication',
-        # TODO Попробовать с этим
-        'rest_framework.authentication.SessionAuthentication',
-        # 'rest_framework.authentication.TokenAuthentication',
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.SessionAuthentication",
     ],
-
-    # Проверка прав (аутентификации)
-    # 'DEFAULT_PERMISSION_CLASSES': [
-    #     'rest_framework.permissions.IsAuthenticated',
-    # ]
 }
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates']
-        ,
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [BASE_DIR / "templates"],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
             ],
         },
     },
 ]
 
-CASHES = {
+CACHES = {
     "default": {
         # Кэширование в ОЗУ
         "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
@@ -115,7 +108,7 @@ CASHES = {
     }
 }
 
-WSGI_APPLICATION = 'src.megano.wsgi.application'
+WSGI_APPLICATION = "src.megano.wsgi.application"
 
 LOGGING = {
     "version": 1,
@@ -145,14 +138,13 @@ LOGGING = {
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-# TODO Нужно ли указывать хост при запуске в Docker?
 DATABASES = {
-    'default': {
-        'ENGINE': 'mysql.connector.django',
-        'HOST': DB_HOST,
-        'NAME': DB_NAME,
-        'USER': DB_USER,
-        'PASSWORD': DB_PASS,
+    "default": {
+        "ENGINE": "mysql.connector.django",
+        "HOST": DB_HOST,
+        "NAME": DB_NAME,
+        "USER": DB_USER,
+        "PASSWORD": DB_PASS,
     },
 }
 
@@ -162,16 +154,16 @@ DATABASES = {
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
 
@@ -180,7 +172,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
 LANGUAGE_CODE = "en-us"
-TIME_ZONE = 'Europe/Moscow'
+TIME_ZONE = "Europe/Moscow"
 USE_I18N = True
 USE_TZ = True
 
@@ -192,20 +184,18 @@ STATIC_URL = "/static/"
 STATICFILES_DIRS = (os.path.join(BASE_DIR, "src", "static"),)
 
 # Директория для сбора статики командой collectstatic
-STATIC_ROOT = os.path.join(
-    BASE_DIR, "src", "staticfiles"
-)
+STATIC_ROOT = os.path.join(BASE_DIR, "src", "staticfiles")
 
 # MEDIA_URL = "/media/"
 MEDIA_URL = "/media/"
 # Сохраняем файлы в директорию с фронтендом
 # MEDIA_ROOT = os.path.join(BASE_DIR, "frontend")
-MEDIA_ROOT = BASE_DIR / 'frontend'
+MEDIA_ROOT = BASE_DIR / "frontend"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Celery settings
 # Т.к. мы используем Redis как в качестве брокера сообщений, так и в качестве серверной части базы данных,

@@ -6,27 +6,64 @@ import src.megano.utils.models.validates
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('api_shop', '0001_initial'),
+        ("api_shop", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='SaleItem',
+            name="SaleItem",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('sale_price', models.FloatField(validators=[src.megano.utils.models.validates.validate_sale_price])),
-                ('date_from', models.DateTimeField(verbose_name='дата начала распродажи')),
-                ('date_to', models.DateTimeField(validators=[src.megano.utils.models.validates.validate_date_to], verbose_name='дата окончания распродажи')),
-                ('deleted', models.BooleanField(choices=[(True, 'Удалено'), (False, 'Активно')], default=False, verbose_name='Статус')),
-                ('product', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to='api_shop.product', verbose_name='товар')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "sale_price",
+                    models.FloatField(
+                        validators=[
+                            src.megano.utils.models.validates.validate_sale_price
+                        ]
+                    ),
+                ),
+                (
+                    "date_from",
+                    models.DateTimeField(verbose_name="дата начала распродажи"),
+                ),
+                (
+                    "date_to",
+                    models.DateTimeField(
+                        validators=[src.megano.utils.models.validates.validate_date_to],
+                        verbose_name="дата окончания распродажи",
+                    ),
+                ),
+                (
+                    "deleted",
+                    models.BooleanField(
+                        choices=[(True, "Удалено"), (False, "Активно")],
+                        default=False,
+                        verbose_name="Статус",
+                    ),
+                ),
+                (
+                    "product",
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="api_shop.product",
+                        verbose_name="товар",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'распродажа',
-                'verbose_name_plural': 'распродажи',
-                'db_table': 'sales_items',
-                'ordering': ['-date_to'],
+                "verbose_name": "распродажа",
+                "verbose_name_plural": "распродажи",
+                "db_table": "sales_items",
+                "ordering": ["-date_to"],
             },
         ),
     ]

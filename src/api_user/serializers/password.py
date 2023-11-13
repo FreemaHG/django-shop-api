@@ -5,11 +5,12 @@ class PasswordSerializer(serializers.Serializer):
     """
     Схема для обновления профиля
     """
+
     password = serializers.CharField()
     passwordReply = serializers.CharField()
 
     class Meta:
-        fields = ['password', 'passwordReply']
+        fields = ["password", "passwordReply"]
 
     def validate(self, data):
         """

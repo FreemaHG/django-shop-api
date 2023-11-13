@@ -7,7 +7,6 @@ import src.megano.utils
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -16,32 +15,81 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Profile',
+            name="Profile",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('full_name', models.CharField(max_length=150, verbose_name='ФИО')),
-                ('phone', models.CharField(max_length=10, null=True, unique=True, verbose_name='телефон')),
-                ('deleted', models.BooleanField(choices=[(True, 'Удалено'), (False, 'Активно')], default=False, verbose_name='Статус')),
-                ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL, verbose_name='пользователь')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("full_name", models.CharField(max_length=150, verbose_name="ФИО")),
+                (
+                    "phone",
+                    models.CharField(
+                        max_length=10, null=True, unique=True, verbose_name="телефон"
+                    ),
+                ),
+                (
+                    "deleted",
+                    models.BooleanField(
+                        choices=[(True, "Удалено"), (False, "Активно")],
+                        default=False,
+                        verbose_name="Статус",
+                    ),
+                ),
+                (
+                    "user",
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                        verbose_name="пользователь",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'профиль',
-                'verbose_name_plural': 'учетные записи',
-                'db_table': 'profile',
+                "verbose_name": "профиль",
+                "verbose_name_plural": "учетные записи",
+                "db_table": "profile",
             },
         ),
         migrations.CreateModel(
-            name='ImageForAvatar',
+            name="ImageForAvatar",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('path', models.ImageField(upload_to=src.megano.utils.save_img.save_avatar, verbose_name='изображение')),
-                ('alt', models.CharField(max_length=250, verbose_name='alt')),
-                ('profile', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='avatar', to='api_user.profile', verbose_name='профиль')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "path",
+                    models.ImageField(
+                        upload_to=src.megano.utils.save_img.save_avatar,
+                        verbose_name="изображение",
+                    ),
+                ),
+                ("alt", models.CharField(max_length=250, verbose_name="alt")),
+                (
+                    "profile",
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="avatar",
+                        to="api_user.profile",
+                        verbose_name="профиль",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'аватар',
-                'verbose_name_plural': 'аватары',
-                'db_table': 'images_for_avatars',
+                "verbose_name": "аватар",
+                "verbose_name_plural": "аватары",
+                "db_table": "images_for_avatars",
             },
         ),
     ]

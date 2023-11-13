@@ -14,7 +14,6 @@ from src.api_shop.models.basket import Basket
 from src.api_shop.utils.admin.soft_remove import soft_remove_child_records
 
 
-# FIXME Раскидать по разным файлам!!!
 @admin.action(description="Мягкое удаление всех записей (включая дочерние)")
 def deleted_all_records(adminmodel, request, queryset):
     """
@@ -45,7 +44,8 @@ class TagAdmin(admin.ModelAdmin):
     """
     Админ-панель для товарных тегов
     """
-    list_display = ['id', 'name', 'deleted']
+
+    list_display = ["id", "name", "deleted"]
     list_display_links = ("name",)
     list_editable = ("deleted",)
 
@@ -91,7 +91,6 @@ class CategoryAdmin(DraggableMPTTAdmin):
 
     fieldsets = (
         ("Основное", {"fields": ("title", "parent")}),
-        # ("Файлы", {"fields": ("image",)}),
         ("Статусы", {"fields": ("deleted",)}),
     )
 
@@ -107,9 +106,7 @@ class CategoryAdmin(DraggableMPTTAdmin):
                 super(CategoryAdmin, self).save_model(request, obj, form, change)
             else:
                 # Меняем уровень сообщения на ERROR
-                messages.set_level(
-                    request, messages.ERROR
-                )
+                messages.set_level(request, messages.ERROR)
                 # Чтобы избежать вывода одновременно 2 сообщений: успешного и в случае ошибки
                 messages.add_message(
                     request,
@@ -128,7 +125,6 @@ class ReviewsAdmin(admin.ModelAdmin):
     """
 
     list_display = ("product", "author", "short_review", "date", "deleted")
-    # list_display_links = ("product_title",)
     list_filter = ("deleted",)
     search_fields = ("product", "short_review")
     list_editable = ("deleted",)
@@ -165,7 +161,8 @@ class SpecificationAdmin(admin.ModelAdmin):
     """
     Админ-панель для характеристик товара
     """
-    list_display = ['id', 'name', 'value']
+
+    list_display = ["id", "name", "value"]
     list_display_links = ("name",)
 
 
@@ -225,7 +222,6 @@ class ProductAdmin(admin.ModelAdmin):
     search_fields = ("title",)
     list_editable = ("deleted",)
 
-    # FIXME Добавлять при помощи миксина
     # Мягкое удаление/восстановление записей
     actions = (
         deleted_records,
@@ -279,6 +275,7 @@ class SaleAdmin(admin.ModelAdmin):
     """
     Админ-панель для записей о распродажах товаров
     """
+
     list_display = (
         "id",
         "product_name",
@@ -292,7 +289,6 @@ class SaleAdmin(admin.ModelAdmin):
     search_fields = ("product_name",)
     list_editable = ("deleted",)
 
-    # FIXME Добавлять при помощи миксина
     # Мягкое удаление/восстановление записей
     actions = (
         deleted_records,
@@ -314,6 +310,7 @@ class SaleAdmin(admin.ModelAdmin):
         return obj.discount
 
     discount.short_description = " Скидка"
+
 
 @admin.register(Basket)
 class BasketAdmin(admin.ModelAdmin):
@@ -350,6 +347,7 @@ class ProductsInOrder(admin.TabularInline):
 
     def has_delete_permission(self, request, obj=None):
         return False
+
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):

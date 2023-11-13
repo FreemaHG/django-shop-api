@@ -5,8 +5,9 @@ class ImageSerializer(serializers.Serializer):
     """
     Схема для изображений
     """
+
     src = serializers.CharField()
     alt = serializers.CharField(max_length=250, default="")
 
     class Meta:
-        fields = ['src', 'alt']
+        fields = ["src", "alt"]

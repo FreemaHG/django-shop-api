@@ -15,7 +15,6 @@ def payment(order_id: int, data: Dict) -> bool:
     """
     Оплата заказа
     """
-    logger.debug("Запуск оплаты в фоне")
     order = Order.objects.filter(id=order_id).first()
 
     if order:
@@ -42,9 +41,7 @@ def payment(order_id: int, data: Dict) -> bool:
             order.status = 3  # Смена статуса заказа на "Не оплачен"
             order.save()
 
-            logger.error(
-                f'Заказ #{order_id} не оплачен'
-            )
+            logger.error(f"Заказ #{order_id} не оплачен")
             return False
 
     else:

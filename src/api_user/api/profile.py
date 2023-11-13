@@ -1,11 +1,10 @@
-import json
 import logging
 
 from django.contrib.auth import authenticate, login
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import JsonResponse
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework import status, viewsets
+from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -27,11 +26,7 @@ class ProfileView(APIView):
     """
 
     @swagger_auto_schema(
-        tags=['profile'],
-        responses={
-            200: ProfileSerializer,
-            404: "No data found"
-        }
+        tags=["profile"], responses={200: ProfileSerializer, 404: "No data found"}
     )
     def get(self, request, format=None):
         logging.debug("Вывод данных профайла")
@@ -47,12 +42,9 @@ class ProfileView(APIView):
             return Response(status=status.HTTP_404_NOT_FOUND)
 
     @swagger_auto_schema(
-        tags=['profile'],
+        tags=["profile"],
         request_body=ProfileSerializer,
-        responses={
-            200: ProfileSerializer,
-            404: "No data found"
-        }
+        responses={200: ProfileSerializer, 404: "No data found"},
     )
     def post(self, request, format=None):
         logging.debug("Обновление данных профайла")
@@ -74,22 +66,21 @@ class ProfileView(APIView):
 
 
 @swagger_auto_schema(
-    tags=['profile'],
-    methods=['post'],
-    responses={
-        200: ImageSerializer,
-        400: "Error updating avatar"
-    }
+    tags=["profile"],
+    methods=["post"],
+    responses={200: ImageSerializer, 400: "Error updating avatar"},
 )
-@api_view(['POST'])
-@permission_classes([IsAuthenticated])  # Разрешено только аутентифицированным пользователям
+@api_view(["POST"])
+@permission_classes(
+    [IsAuthenticated]
+)  # Разрешено только аутентифицированным пользователям
 def update_avatar(request):
     """
     Обновление аватара
     """
     logging.debug("Обновление аватара")
 
-    avatar = request.FILES['avatar']
+    avatar = request.FILES["avatar"]
     profile = Profile.objects.get(user=request.user)
 
     ImageForAvatar.objects.filter(profile=profile).delete()  # Удаляем старый аватар
@@ -108,16 +99,15 @@ def update_avatar(request):
 
 
 @swagger_auto_schema(
-    tags=['profile'],
-    methods=['post'],
+    tags=["profile"],
+    methods=["post"],
     request_body=PasswordSerializer,
-    responses={
-        200: "password updated",
-        400: "Invalid data"
-    }
+    responses={200: "password updated", 400: "Invalid data"},
 )
-@api_view(['POST'])
-@permission_classes([IsAuthenticated])  # Разрешено только аутентифицированным пользователям
+@api_view(["POST"])
+@permission_classes(
+    [IsAuthenticated]
+)  # Разрешено только аутентифицированным пользователям
 def update_password(request):
     """
     Обновление пароля
@@ -127,12 +117,14 @@ def update_password(request):
 
     if serializer.is_valid():
         user = request.user
-        user.set_password(serializer.validated_data['password'])  # Обновляем пароль
+        user.set_password(serializer.validated_data["password"])  # Обновляем пароль
         user.save()
         logger.info("пароль обновлен")
 
         # Аутентификация и авторизация пользователя
-        user = authenticate(username=user.username, password=serializer.validated_data["password"])
+        user = authenticate(
+            username=user.username, password=serializer.validated_data["password"]
+        )
         login(request, user)
 
         return Response(status=status.HTTP_200_OK)

@@ -2,13 +2,92 @@ version: '3.11'
 
 services:
 
+  nginx:
+    container_name: nginx
+    build: nginx
+    volumes:
+      - staticfiles:/src/staticfiles
+      - ./frontend/static/:/frontend/static
+    ports:
+      - 80:80
+      - 443:443
+    depends_on:
+      - api
+
+  api:
+    build:
+      context: .
+    env_file:
+      - .env
+    container_name: api
+    # Собираем статику и запускаем сервер
+    command: [ "/docker/api.sh" ]
+    volumes:
+      # Именованный том
+      - staticfiles:/src/staticfiles
+    expose:
+      - 8000
+    ports:
+      - 8000:8000
+    depends_on:
+      - mysql
+      - redis
+      - celery
+
+  redis:
+    image: redis:7
+    container_name: redis
+    # На случай, если в Docker уже есть запущенные контейнеры с redis на порту 6379
+    command: --port 6379
+    expose:
+      - 6379
+
+  celery:
+    # Т.к. Celery это не отдельная технология как PostgresSQL или Redis, а просто пакет, используемый в приложении,
+    # то в качестве образа используется та же сборка (Dockerfile), что и при разворачивании контейнера с приложением
+    build:
+      context: .
+    # Файл с переменными окружения для использования в приложении
+    env_file:
+      - .env
+    container_name: celery
+    # Команды для запуска Celery в отдельном файле
+    # "celery" - передаем аргумент в команду, прописанную в файле celery.sh
+    command: ["/docker/celery.sh", "celery"]
+    # Зависимость (контейнер с celery запуститься только после запуска контейнера с redis)
+    depends_on:
+      - redis
+
+  flower:
+    # Т.к. flower это не отдельная технология как PostgresSQL или Redis, а просто пакет, используемый в приложении,
+    # то в качестве образа используется та же сборка (Dockerfile), что и при разворачивании контейнера с приложением
+    build:
+      context: .
+    # Файл с переменными окружения для использования в приложении
+    env_file:
+      - .env
+    # Название контейнера
+    container_name: flower
+    # Команды для запуска flower
+    # Тот же файл, что и для запуска celery, просто передаем другой аргумент и выполнится другая команда
+    # "flower" - передаем аргумент в команду, прописанную в файле celery.sh
+    command: ["/docker/celery.sh", "flower"]
+    # Зависимость (контейнер с flower запуститься только после запуска контейнера с redis и celery)
+    depends_on:
+      - redis
+      - celery
+    # Порты, чтобы можно было руками зайти и просмотреть запущенные воркеры и задачи в фоне
+    # порт на ПК: порт в контейнере
+    ports:
+      - 5555:5555
+
   mysql:
-    # Используем официальный образ MySQL
     image: mysql
     container_name: mysql
+    expose:
+      - 3306
     ports:
       - 3306:3306
-    # Переменная среды с паролем для подключения к БД
     environment:
       - MYSQL_DATABASE=${DB_NAME:?err}
       - MYSQL_ROOT_PASSWORD=${DB_PASS:?err}
@@ -16,14 +95,13 @@ services:
       - MYSQL_PASSWORD=${DB_PASS:?err}
     env_file:
       - .env
-#    restart: always
+    restart: unless-stopped
     # Тома для хранения данных и конфигов БД
     volumes:
-      # Сохраняем БД физически в файловой системе
-      - ./mysql/:/var/lib/mysql
-      # Сохраняем в именованный том
+      - mysql:/var/lib/mysql
       - mysql_config:/etc/mysql
 
 volumes:
-#  mysql:
+  mysql:
   mysql_config:
+  staticfiles:

@@ -19,7 +19,9 @@ def save_img_for_product(instance, filename: str) -> str:
     logger.debug("Сохранение изображения товара")
 
     # Сохраняем файлы в директорию с фронтендом
-    return os.path.join("static", _PRODUCTS_PATH, f"{instance.product.id}", f"{filename}")
+    return os.path.join(
+        "static", _PRODUCTS_PATH, f"{instance.product.id}", f"{filename}"
+    )
 
 
 def save_img_for_category(instance, filename: str) -> str:
@@ -33,7 +35,9 @@ def save_img_for_category(instance, filename: str) -> str:
     logger.debug("Сохранение изображения категории")
 
     # Сохраняем файлы в директорию с фронтендом
-    return os.path.join("static", _CATEGORIES_PATH, f"{instance.category.id}", f"{filename}")
+    return os.path.join(
+        "static", _CATEGORIES_PATH, f"{instance.category.id}", f"{filename}"
+    )
 
 
 def save_avatar(instance, filename: str) -> str:
@@ -46,4 +50,6 @@ def save_avatar(instance, filename: str) -> str:
     """
     logger.debug("Сохранение аватара пользователя")
 
-    return os.path.join("static", _AVATARS_PATH, f"{instance.profile.user.username}", f"{filename}")
+    return os.path.join(
+        "static", _AVATARS_PATH, f"{instance.profile.user.username}", f"{filename}"
+    )

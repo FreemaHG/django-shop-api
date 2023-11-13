@@ -9,8 +9,9 @@ class Tag(models.Model):
     """
 
     name = models.CharField(max_length=100, verbose_name="тег")
-    # Мягкое удаление
-    deleted = models.BooleanField(choices=STATUS_CHOICES, default=False, verbose_name="статус")
+    deleted = models.BooleanField(
+        choices=STATUS_CHOICES, default=False, verbose_name="статус"
+    )  # Мягкое удаление
 
     class Meta:
         db_table = "tags"

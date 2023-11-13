@@ -29,7 +29,6 @@ class OrderService:
             logger.error("Заказ не найден")
             raise Http404
 
-
     @classmethod
     def create(cls, data: List[Basket], user: User) -> int:
         """
@@ -37,7 +36,7 @@ class OrderService:
         """
         logger.debug("Создание заказа")
 
-        order = Order.objects.create(user = user)
+        order = Order.objects.create(user=user)
         new_records = []
 
         for product in data:
@@ -47,7 +46,7 @@ class OrderService:
                 order=order,
                 product_id=product["product"]["id"],
                 count=product["count"],
-                price=product["price"]
+                price=product["price"],
             )
 
             new_records.append(record)

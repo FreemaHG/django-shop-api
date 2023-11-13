@@ -4,20 +4,19 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('api_shop', '0002_saleitem'),
+        ("api_shop", "0002_saleitem"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='saleitem',
-            name='date_to',
-            field=models.DateTimeField(verbose_name='дата окончания распродажи'),
+            model_name="saleitem",
+            name="date_to",
+            field=models.DateTimeField(verbose_name="дата окончания распродажи"),
         ),
         migrations.AlterField(
-            model_name='saleitem',
-            name='sale_price',
-            field=models.FloatField(verbose_name='цена со скидкой'),
+            model_name="saleitem",
+            name="sale_price",
+            field=models.FloatField(verbose_name="цена со скидкой"),
         ),
     ]

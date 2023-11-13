@@ -4,19 +4,19 @@ from src.api_shop.models.review import Review
 
 
 class ReviewInSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Review
-        fields = ['author', 'email', 'text', 'date', 'rate']
+        fields = ["author", "email", "text", "date", "rate"]
 
 
 class ReviewOutSerializer(serializers.ModelSerializer):
     """
     Схема для отзывов
     """
-    author = serializers.SerializerMethodField('get_author')
-    email = serializers.SerializerMethodField('get_email')
-    date = serializers.SerializerMethodField('date_format')
+
+    author = serializers.SerializerMethodField("get_author")
+    email = serializers.SerializerMethodField("get_email")
+    date = serializers.SerializerMethodField("date_format")
 
     def date_format(self, obj):
         """
@@ -52,9 +52,9 @@ class ReviewOutSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
         fields = [
-            'author',
-            'email',
-            'text',
-            'rate',
-            'date',
+            "author",
+            "email",
+            "text",
+            "rate",
+            "date",
         ]
