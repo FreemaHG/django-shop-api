@@ -10,9 +10,9 @@ urlpatterns = [
         "sign-",
         include(
             [
-                path("in/", user_login, name="sing-in"),
-                path("up/", register_user, name="sing-up"),
-                path("out/", user_logout, name="sing-out"),
+                path("in/", user_login, name="sign-in"),
+                path("up/", register_user, name="sign-up"),
+                path("out/", user_logout, name="sign-out"),
             ]
         ),
     ),

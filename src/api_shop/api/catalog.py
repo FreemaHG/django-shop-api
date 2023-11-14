@@ -48,8 +48,11 @@ class LimitedProductsView(viewsets.ViewSet):
 
         # TODO Обработать ошибку, когда нет товаров!!!
         queryset = list(Product.objects.filter(count__lte=50))
-        random_queryset = random.sample(queryset, 4)  # 4 случайные записи
-        serializer = ProductShortSerializer(random_queryset, many=True)
+
+        if len(queryset) > 4:
+            queryset = random.sample(queryset, 4)  # 4 случайные записи
+
+        serializer = ProductShortSerializer(queryset, many=True)
 
         return JsonResponse(serializer.data, safe=False)
 
@@ -66,10 +69,15 @@ class BannersProductsView(viewsets.ViewSet):
         sales_id = list(
             SaleItem.objects.values_list("id", flat=True)
         )  # Все id записей с акциями
-        rand_ids = random.sample(sales_id, 3)  # 3 случайные записи
+
+        if len(sales_id) > 3:
+            sales_id = random.sample(sales_id, 3)  # 3 случайные записи
+
+        # Получаем товары по акции
         queryset = Product.objects.filter(
-            saleitem__id__in=rand_ids
-        )  # Получаем товары по акции
+            saleitem__id__in=sales_id
+        )
+
         serializer = ProductShortSerializer(queryset, many=True)
 
         return JsonResponse(serializer.data, safe=False)
@@ -101,14 +109,12 @@ class SalesView(ListModelMixin, viewsets.GenericViewSet):
         """
         logger.debug("Вывод товаров на распродаже")
 
-        # FIXME Проверить оптимизацию запроса
         # WARNING Ограничение в 40 записей, чтобы пагинация не ломала верстку (корявый фронт)
         queryset = SaleItem.objects.select_related("product").filter(deleted=False)[
             :40
         ]  # Только активные акции
 
         # Пагинация
-        # FIXME Вынести, не дублировать
         page = self.paginate_queryset(queryset)
 
         if page is not None:
@@ -146,8 +152,6 @@ class CatalogView(ListModelMixin, viewsets.GenericViewSet):
         queryset = CatalogService.get_products(query_params=query_params, tags=tags)
 
         # Пагинация
-        # FIXME Вынести, не дублировать!!!
-        # FIXME Оптимизировать запросы
         page = self.paginate_queryset(queryset)
 
         if page is not None:
