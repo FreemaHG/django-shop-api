@@ -4,7 +4,7 @@ Frontend реализован на Vue3.
 
 ## Оглавление
 1. [Инструменты](#Инструменты)
-2. [Возможности](#Функционал)
+2. [Функционал](#Функционал)
 3. [Установка](#Установка)
 4. [Скриншоты](#Скриншоты)
 
@@ -72,9 +72,9 @@ docker-compose exec api python3 -m src.manage createsuperuser
 **ВАЖНО**: домен задается в файле **.env** в переменной окружения **DOMEN_HOST**.
 
 ## Скриншоты
-![](/screen/1.jpg)
-![](/screen/2.jpg)
-![](/screen/3.jpg)
-![](/screen/4.jpg)
-![](/screen/5.jpg)
-![](/screen/6.jpg)
+![](/screen/1.png)
+![](/screen/2.png)
+![](/screen/3.png)
+![](/screen/4.png)
+![](/screen/5.png)
+![](/screen/6.png)
