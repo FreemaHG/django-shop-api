@@ -71,16 +71,10 @@ docker-compose exec api python3 -m src.manage createsuperuser
 
 **ВАЖНО**: домен задается в файле **.env** в переменной окружения **DOMEN_HOST**.
 
-## Скриншоты (ДОБАВИТЬ!!!)
-![](/screen/2023-06-25_14-54-43.jpg)
-![](/screen/2023-06-25_14-57-10.jpg)
-![](/screen/2023-06-25_14-58-25.jpg)
-![](/screen/2023-06-25_14-59-44.jpg)
-![](/screen/2023-06-25_15-00-24.jpg)
-![](/screen/2023-06-25_15-01-24.jpg)
-![](/screen/2023-06-25_15-05-02.jpg)
-![](/screen/2023-06-25_15-05-29.jpg)
-![](/screen/2023-06-25_15-07-08.jpg)
-![](/screen/2023-06-25_15-07-33.jpg)
-![](/screen/2023-06-25_15-08-04.jpg)
-![](/screen/2023-06-25_15-08-32.jpg)
+## Скриншоты
+![](/screen/1.jpg)
+![](/screen/2.jpg)
+![](/screen/3.jpg)
+![](/screen/4.jpg)
+![](/screen/5.jpg)
+![](/screen/6.jpg)
